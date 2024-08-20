@@ -10,7 +10,7 @@ public class Experience {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @ManyToOne
     private User user;
@@ -31,5 +31,7 @@ public class Experience {
 
     private int inappropriateContentReports;
 
-    // Getters, setters, constructors...
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

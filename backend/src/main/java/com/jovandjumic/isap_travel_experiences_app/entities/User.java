@@ -29,5 +29,8 @@ public class User {
     private String role = "user";
     private Boolean accountStatus = true;
 
-    // Getters, setters, constructors...
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

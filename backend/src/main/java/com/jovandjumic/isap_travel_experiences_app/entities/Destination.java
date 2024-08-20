@@ -16,5 +16,7 @@ public class Destination {
     @ManyToOne
     private Country country;
 
-    // Getters, setters, constructors...
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

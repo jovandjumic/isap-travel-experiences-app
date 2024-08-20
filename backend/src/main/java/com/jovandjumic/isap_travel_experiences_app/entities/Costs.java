@@ -23,5 +23,7 @@ public class Costs {
     private double otherCosts;
     private String otherCostsType; // "Per person" or "Total"
 
-    // Getters, setters, constructors...
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

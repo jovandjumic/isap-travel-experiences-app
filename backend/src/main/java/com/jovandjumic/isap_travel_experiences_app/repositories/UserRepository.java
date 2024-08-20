@@ -1,4 +1,8 @@
 package com.jovandjumic.isap_travel_experiences_app.repositories;
 
-public class UserRepository {
+import com.jovandjumic.isap_travel_experiences_app.entities.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUsername(String username);
 }

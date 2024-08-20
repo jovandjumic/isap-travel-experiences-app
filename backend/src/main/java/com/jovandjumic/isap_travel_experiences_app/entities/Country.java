@@ -15,5 +15,7 @@ public class Country {
     private String countryName;
     private String continent;
 
-    // Getters, setters, constructors...
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
