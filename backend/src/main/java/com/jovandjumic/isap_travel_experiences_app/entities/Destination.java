@@ -1,6 +1,8 @@
 package com.jovandjumic.isap_travel_experiences_app.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 public class Destination {
@@ -9,6 +11,8 @@ public class Destination {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @Getter
     private String locationName;
     private String locationType;
     private String regionArea;
@@ -16,11 +20,4 @@ public class Destination {
     @ManyToOne
     private Country country;
 
-    public String getLocationName() {
-        return locationName;
-    }
-
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
-    }
 }

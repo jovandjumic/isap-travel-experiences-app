@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 public class Costs {
@@ -12,6 +14,8 @@ public class Costs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
+    @Setter
     private double travelCost;
     private String travelMode;
     private String travelRoute;
@@ -23,11 +27,4 @@ public class Costs {
     private double otherCosts;
     private String otherCostsType; // "Per person" or "Total"
 
-    public double getTravelCost() {
-        return travelCost;
-    }
-
-    public void setTravelCost(double travelCost) {
-        this.travelCost = travelCost;
-    }
 }

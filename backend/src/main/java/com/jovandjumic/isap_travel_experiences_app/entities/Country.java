@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 public class Country {
@@ -12,14 +14,9 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @Getter
     private String countryName;
     private String continent;
 
-    public String getCountryName() {
-        return countryName;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
 }

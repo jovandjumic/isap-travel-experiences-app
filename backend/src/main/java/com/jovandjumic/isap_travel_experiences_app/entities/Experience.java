@@ -1,6 +1,8 @@
 package com.jovandjumic.isap_travel_experiences_app.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
@@ -18,6 +20,8 @@ public class Experience {
     @ManyToOne
     private Destination destination;
 
+    @Setter
+    @Getter
     private int daysSpent;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -31,11 +35,4 @@ public class Experience {
 
     private int inappropriateContentReports;
 
-    public int getDaysSpent() {
-        return daysSpent;
-    }
-
-    public void setDaysSpent(int daysSpent) {
-        this.daysSpent = daysSpent;
-    }
 }

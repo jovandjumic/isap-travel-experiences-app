@@ -1,6 +1,8 @@
 package com.jovandjumic.isap_travel_experiences_app.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
@@ -11,6 +13,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @Getter
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -29,11 +33,4 @@ public class User {
     private String role = "user";
     private Boolean accountStatus = true;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }
