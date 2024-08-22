@@ -8,13 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.List;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static com.jovandjumic.isap_travel_experiences_app.utils.TestUtils.setId;
 
 public class CostsServiceTest {
 
@@ -27,12 +27,6 @@ public class CostsServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    private void setId(Object entity, Long idValue) throws Exception {
-        Field idField = entity.getClass().getDeclaredField("id");
-        idField.setAccessible(true);
-        idField.set(entity, idValue);
     }
 
     @Test
