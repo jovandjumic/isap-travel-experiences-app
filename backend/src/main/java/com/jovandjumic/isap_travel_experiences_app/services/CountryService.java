@@ -25,12 +25,10 @@ public class CountryService {
     }
 
     public Country updateCountry(Long id, Country updatedCountry) {
-        Optional<Country> existingCountry = countryRepository.findById(id);
-        if (existingCountry.isPresent()) {
-            updatedCountry.setId(id);
-            return countryRepository.save(updatedCountry);
-        }
-        return null;
+        return countryRepository.findById(id).map(existingCountry -> {
+            existingCountry.setCountryName(updatedCountry.getCountryName());
+            return countryRepository.save(existingCountry);
+        }).orElse(null);
     }
 
     public void deleteCountry(Long id) {

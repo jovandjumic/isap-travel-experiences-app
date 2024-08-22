@@ -25,12 +25,10 @@ public class ExperienceService {
     }
 
     public Experience updateExperience(Long id, Experience updatedExperience) {
-        Optional<Experience> existingExperience = experienceRepository.findById(id);
-        if (existingExperience.isPresent()) {
-            updatedExperience.setId(id);
-            return experienceRepository.save(updatedExperience);
-        }
-        return null;
+        return experienceRepository.findById(id).map(existingExperience -> {
+            existingExperience.setDaysSpent(updatedExperience.getDaysSpent());
+            return experienceRepository.save(existingExperience);
+        }).orElse(null);
     }
 
     public void deleteExperience(Long id) {

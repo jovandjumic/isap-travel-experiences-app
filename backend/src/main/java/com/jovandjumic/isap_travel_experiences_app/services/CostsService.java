@@ -25,12 +25,10 @@ public class CostsService {
     }
 
     public Costs updateCosts(Long id, Costs updatedCosts) {
-        Optional<Costs> existingCosts = costsRepository.findById(id);
-        if (existingCosts.isPresent()) {
-            updatedCosts.setId(id);
-            return costsRepository.save(updatedCosts);
-        }
-        return null;
+        return costsRepository.findById(id).map(existingCosts -> {
+            existingCosts.setTravelCost(updatedCosts.getTravelCost());
+            return costsRepository.save(existingCosts);
+        }).orElse(null);
     }
 
     public void deleteCosts(Long id) {

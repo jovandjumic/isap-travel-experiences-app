@@ -31,7 +31,11 @@ public class Experience {
 
     private int inappropriateContentReports;
 
-    public void setId(Long id) {
-        this.id = id;
+    public int getDaysSpent() {
+        return daysSpent;
+    }
+
+    public void setDaysSpent(int daysSpent) {
+        this.daysSpent = daysSpent;
     }
 }

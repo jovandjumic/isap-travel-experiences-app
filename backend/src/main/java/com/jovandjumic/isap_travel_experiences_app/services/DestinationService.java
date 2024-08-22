@@ -25,12 +25,10 @@ public class DestinationService {
     }
 
     public Destination updateDestination(Long id, Destination updatedDestination) {
-        Optional<Destination> existingDestination = destinationRepository.findById(id);
-        if (existingDestination.isPresent()) {
-            updatedDestination.setId(id);
-            return destinationRepository.save(updatedDestination);
-        }
-        return null;
+        return destinationRepository.findById(id).map(existingDestination -> {
+            existingDestination.setLocationName(updatedDestination.getLocationName());
+            return destinationRepository.save(existingDestination);
+        }).orElse(null);
     }
 
     public void deleteDestination(Long id) {

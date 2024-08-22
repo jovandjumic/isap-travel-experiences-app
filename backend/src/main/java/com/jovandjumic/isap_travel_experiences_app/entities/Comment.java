@@ -21,5 +21,4 @@ public class Comment {
 
     private Date commentDate;
 
-    // Getters, setters, constructors...
 }

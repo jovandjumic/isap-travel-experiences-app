@@ -27,12 +27,10 @@ public class UserService {
     }
 
     public User updateUser(Long id, User updatedUser) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            updatedUser.setId(id);
-            return userRepository.save(updatedUser);
-        }
-        return null;
+        return userRepository.findById(id).map(existingUser -> {
+            existingUser.setUsername(updatedUser.getUsername());
+            return userRepository.save(existingUser);
+        }).orElse(null);
     }
 
     public void deleteUser(Long id) {

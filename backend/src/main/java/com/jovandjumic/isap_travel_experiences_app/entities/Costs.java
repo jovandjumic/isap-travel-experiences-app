@@ -23,7 +23,11 @@ public class Costs {
     private double otherCosts;
     private String otherCostsType; // "Per person" or "Total"
 
-    public void setId(Long id) {
-        this.id = id;
+    public double getTravelCost() {
+        return travelCost;
+    }
+
+    public void setTravelCost(double travelCost) {
+        this.travelCost = travelCost;
     }
 }
