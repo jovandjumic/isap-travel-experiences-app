@@ -99,12 +99,12 @@ public class AppUserServiceTest {
         appUser.setPhoneNumber("1234567890");
 
         AppUser updatedAppUser = new AppUser();
-        appUser.setUsername("janesmith");
-        appUser.setPassword("newpassword");
-        appUser.setEmail("janesmith@example.com");
-        appUser.setFirstName("Jane");
-        appUser.setLastName("Smith");
-        appUser.setPhoneNumber("0123456789");
+        updatedAppUser.setUsername("janesmith");
+        updatedAppUser.setPassword("newpassword");
+        updatedAppUser.setEmail("janesmith@example.com");
+        updatedAppUser.setFirstName("Jane");
+        updatedAppUser.setLastName("Smith");
+        updatedAppUser.setPhoneNumber("0123456789");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(appUser));
         when(userRepository.save(appUser)).thenReturn(appUser);
@@ -134,9 +134,9 @@ public class AppUserServiceTest {
         appUser.setPhoneNumber("1234567890");
 
         AppUser updatedAppUser = new AppUser();
-        appUser.setUsername("janesmith");
-        appUser.setPassword("newpassword");
-        appUser.setEmail("janesmith@example.com");
+        updatedAppUser.setUsername("janesmith");
+        updatedAppUser.setPassword("newpassword");
+        updatedAppUser.setEmail("janesmith@example.com");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(appUser));
         when(userRepository.save(appUser)).thenReturn(appUser);

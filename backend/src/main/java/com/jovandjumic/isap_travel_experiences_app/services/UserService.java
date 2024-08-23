@@ -27,26 +27,26 @@ public class UserService {
     }
 
     public AppUser updateUser(Long id, AppUser updatedAppUser) {
-        return userRepository.findById(id).map(existingUser -> {
+        return userRepository.findById(id).map(existingAppUser -> {
             if (updatedAppUser.getUsername() != null) {
-                existingUser.setUsername(updatedAppUser.getUsername());
+                existingAppUser.setUsername(updatedAppUser.getUsername());
             }
             if (updatedAppUser.getPassword() != null) {
-                existingUser.setPassword(updatedAppUser.getPassword());
+                existingAppUser.setPassword(updatedAppUser.getPassword());
             }
             if (updatedAppUser.getEmail() != null) {
-                existingUser.setEmail(updatedAppUser.getEmail());
+                existingAppUser.setEmail(updatedAppUser.getEmail());
             }
             if (updatedAppUser.getFirstName() != null) {
-                existingUser.setFirstName(updatedAppUser.getFirstName());
+                existingAppUser.setFirstName(updatedAppUser.getFirstName());
             }
             if (updatedAppUser.getLastName() != null) {
-                existingUser.setLastName(updatedAppUser.getLastName());
+                existingAppUser.setLastName(updatedAppUser.getLastName());
             }
             if (updatedAppUser.getPhoneNumber() != null) {
-                existingUser.setPhoneNumber(updatedAppUser.getPhoneNumber());
+                existingAppUser.setPhoneNumber(updatedAppUser.getPhoneNumber());
             }
-            return userRepository.save(existingUser);
+            return userRepository.save(existingAppUser);
         }).orElse(null);
     }
 
