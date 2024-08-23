@@ -30,7 +30,7 @@ public class Experience {
     private Costs costs;
 
     private Double rating;
-    private Date publishDate;
+    private Date createdAt;
 
     @OneToMany(mappedBy = "experience")
     private List<Comment> comments;

@@ -1,9 +1,6 @@
 package com.jovandjumic.isap_travel_experiences_app.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,4 +26,13 @@ public class Costs {
     private Double otherCosts;
     private String otherCostsType; // "Per person" or "Total"
 
+    private Double totalCost;
+
+    @PrePersist
+    @PreUpdate
+    private void calculateTotalCost() {
+        this.totalCost = (travelCost != null ? travelCost : 0.0) +
+                (accommodationCost != null ? accommodationCost : 0.0) +
+                (otherCosts != null ? otherCosts : 0.0);
+    }
 }
