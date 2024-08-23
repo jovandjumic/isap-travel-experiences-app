@@ -1,5 +1,7 @@
 package com.jovandjumic.isap_travel_experiences_app.services;
 
+import com.jovandjumic.isap_travel_experiences_app.entities.Costs;
+import com.jovandjumic.isap_travel_experiences_app.entities.Destination;
 import com.jovandjumic.isap_travel_experiences_app.entities.Experience;
 import com.jovandjumic.isap_travel_experiences_app.repositories.ExperienceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,13 +90,31 @@ public class ExperienceServiceTest {
     }
 
     @Test
-    void testUpdateExperience() throws Exception {
+    void testUpdateExperienceAllFieldsUpdated() throws Exception {
         Experience experience = new Experience();
         setId(experience, 1L);
+        Destination paris = new Destination();
+        paris.setLocationName("Paris");
+        experience.setDestination(paris);
         experience.setDaysSpent(5);
+        Costs costs = new Costs();
+        costs.setTravelCost(1000.0);
+        costs.setAccommodationCost(500.0);
+        costs.setOtherCosts(200.0);
+        experience.setCosts(costs);
+        experience.setRating(4.5);
 
         Experience updatedExperience = new Experience();
+        Destination berlin = new Destination();
+        berlin.setLocationName("Berlin");
+        updatedExperience.setDestination(berlin);
         updatedExperience.setDaysSpent(7);
+        Costs updatedCosts = new Costs();
+        updatedCosts.setTravelCost(1200.0);
+        updatedCosts.setAccommodationCost(600.0);
+        updatedCosts.setOtherCosts(250.0);
+        updatedExperience.setCosts(updatedCosts);
+        updatedExperience.setRating(4.8);
 
         when(experienceRepository.findById(1L)).thenReturn(Optional.of(experience));
         when(experienceRepository.save(experience)).thenReturn(experience);
@@ -102,7 +122,84 @@ public class ExperienceServiceTest {
         Experience result = experienceService.updateExperience(1L, updatedExperience);
 
         assertNotNull(result);
+        assertEquals("Berlin", result.getDestination().getLocationName());
         assertEquals(7, result.getDaysSpent());
+        assertEquals(1200.0, result.getCosts().getTravelCost());
+        assertEquals(600.0, result.getCosts().getAccommodationCost());
+        assertEquals(250.0, result.getCosts().getOtherCosts());
+        assertEquals(4.8, result.getRating());
+        verify(experienceRepository, times(1)).findById(1L);
+        verify(experienceRepository, times(1)).save(experience);
+    }
+
+    @Test
+    void testUpdateExperienceSomeFieldsUpdated() throws Exception {
+        Experience experience = new Experience();
+        setId(experience, 1L);
+        Destination paris = new Destination();
+        paris.setLocationName("Paris");
+        experience.setDestination(paris);
+        experience.setDaysSpent(5);
+        Costs costs = new Costs();
+        costs.setTravelCost(1000.0);
+        costs.setAccommodationCost(500.0);
+        costs.setOtherCosts(200.0);
+        experience.setCosts(costs);
+        experience.setRating(4.5);
+
+        Experience updatedExperience = new Experience();
+        Costs updatedCosts = new Costs();
+        updatedCosts.setTravelCost(1200.0);
+        updatedCosts.setAccommodationCost(600.0);
+        updatedCosts.setOtherCosts(250.0);
+        updatedExperience.setCosts(updatedCosts);
+        updatedExperience.setRating(4.8);
+
+        when(experienceRepository.findById(1L)).thenReturn(Optional.of(experience));
+        when(experienceRepository.save(experience)).thenReturn(experience);
+
+        Experience result = experienceService.updateExperience(1L, updatedExperience);
+
+        assertNotNull(result);
+        assertEquals("Paris", result.getDestination().getLocationName());
+        assertEquals(5, result.getDaysSpent());
+        assertEquals(1200.0, result.getCosts().getTravelCost());
+        assertEquals(600.0, result.getCosts().getAccommodationCost());
+        assertEquals(250.0, result.getCosts().getOtherCosts());
+        assertEquals(4.8, result.getRating());
+        verify(experienceRepository, times(1)).findById(1L);
+        verify(experienceRepository, times(1)).save(experience);
+    }
+
+    @Test
+    void testUpdateExperienceNoFieldsUpdated() throws Exception {
+        Experience experience = new Experience();
+        setId(experience, 1L);
+        Destination paris = new Destination();
+        paris.setLocationName("Paris");
+        experience.setDestination(paris);
+        experience.setDaysSpent(5);
+        Costs costs = new Costs();
+        costs.setTravelCost(1000.0);
+        costs.setAccommodationCost(500.0);
+        costs.setOtherCosts(200.0);
+        experience.setCosts(costs);
+        experience.setRating(4.5);
+
+        Experience updatedExperience = new Experience();
+
+        when(experienceRepository.findById(1L)).thenReturn(Optional.of(experience));
+        when(experienceRepository.save(experience)).thenReturn(experience);
+
+        Experience result = experienceService.updateExperience(1L, updatedExperience);
+
+        assertNotNull(result);
+        assertEquals("Paris", result.getDestination().getLocationName());
+        assertEquals(5, result.getDaysSpent());
+        assertEquals(1000.0, result.getCosts().getTravelCost());
+        assertEquals(500.0, result.getCosts().getAccommodationCost());
+        assertEquals(200.0, result.getCosts().getOtherCosts());
+        assertEquals(4.5, result.getRating());
         verify(experienceRepository, times(1)).findById(1L);
         verify(experienceRepository, times(1)).save(experience);
     }

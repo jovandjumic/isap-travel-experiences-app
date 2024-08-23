@@ -32,14 +32,14 @@ public class CostsServiceTest {
     @Test
     void testCreateCosts() {
         Costs costs = new Costs();
-        costs.setTravelCost(500);
+        costs.setTravelCost(500.0);
 
         when(costsRepository.save(costs)).thenReturn(costs);
 
         Costs createdCosts = costsService.createCosts(costs);
 
         assertNotNull(createdCosts);
-        assertEquals(500, createdCosts.getTravelCost());
+        assertEquals(500.0, createdCosts.getTravelCost());
         verify(costsRepository, times(1)).save(costs);
     }
 
@@ -47,14 +47,14 @@ public class CostsServiceTest {
     void testGetCostsById() throws Exception {
         Costs costs = new Costs();
         setId(costs, 1L);
-        costs.setTravelCost(500);
+        costs.setTravelCost(500.0);
 
         when(costsRepository.findById(1L)).thenReturn(Optional.of(costs));
 
         Optional<Costs> foundCosts = costsService.getCostsById(1L);
 
         assertTrue(foundCosts.isPresent());
-        assertEquals(500, foundCosts.get().getTravelCost());
+        assertEquals(500.0, foundCosts.get().getTravelCost());
         verify(costsRepository, times(1)).findById(1L);
     }
 
@@ -72,11 +72,11 @@ public class CostsServiceTest {
     void testGetAllCosts() throws Exception {
         Costs costs1 = new Costs();
         setId(costs1, 1L);
-        costs1.setTravelCost(500);
+        costs1.setTravelCost(500.0);
 
         Costs costs2 = new Costs();
         setId(costs2, 2L);
-        costs2.setTravelCost(700);
+        costs2.setTravelCost(700.0);
 
         when(costsRepository.findAll()).thenReturn(Arrays.asList(costs1, costs2));
 
@@ -88,13 +88,17 @@ public class CostsServiceTest {
     }
 
     @Test
-    void testUpdateCosts() throws Exception {
+    void testUpdateCostsAllFieldsUpdated() throws Exception {
         Costs costs = new Costs();
         setId(costs, 1L);
-        costs.setTravelCost(500);
+        costs.setTravelCost(500.0);
+        costs.setAccommodationCost(200.0);
+        costs.setOtherCosts(50.0);
 
         Costs updatedCosts = new Costs();
-        updatedCosts.setTravelCost(700);
+        updatedCosts.setTravelCost(700.0);
+        updatedCosts.setAccommodationCost(250.0);
+        updatedCosts.setOtherCosts(100.0);
 
         when(costsRepository.findById(1L)).thenReturn(Optional.of(costs));
         when(costsRepository.save(costs)).thenReturn(costs);
@@ -102,7 +106,57 @@ public class CostsServiceTest {
         Costs result = costsService.updateCosts(1L, updatedCosts);
 
         assertNotNull(result);
-        assertEquals(700, result.getTravelCost());
+        assertEquals(700.0, result.getTravelCost());
+        assertEquals(250.0, result.getAccommodationCost());
+        assertEquals(100.0, result.getOtherCosts());
+        verify(costsRepository, times(1)).findById(1L);
+        verify(costsRepository, times(1)).save(costs);
+    }
+
+    @Test
+    void testUpdateCostsSomeFieldsUpdated() throws Exception {
+        Costs costs = new Costs();
+        setId(costs, 1L);
+        costs.setTravelCost(500.0);
+        costs.setAccommodationCost(200.0);
+        costs.setOtherCosts(50.0);
+
+        Costs updatedCosts = new Costs();
+        updatedCosts.setTravelCost(700.0);
+        updatedCosts.setAccommodationCost(250.0);
+
+        when(costsRepository.findById(1L)).thenReturn(Optional.of(costs));
+        when(costsRepository.save(costs)).thenReturn(costs);
+
+        Costs result = costsService.updateCosts(1L, updatedCosts);
+
+        assertNotNull(result);
+        assertEquals(700.0, result.getTravelCost());
+        assertEquals(250.0, result.getAccommodationCost());
+        assertEquals(50.0, result.getOtherCosts());
+        verify(costsRepository, times(1)).findById(1L);
+        verify(costsRepository, times(1)).save(costs);
+    }
+
+    @Test
+    void testUpdateCostsNoFieldsUpdated() throws Exception {
+        Costs costs = new Costs();
+        setId(costs, 1L);
+        costs.setTravelCost(500.0);
+        costs.setAccommodationCost(200.0);
+        costs.setOtherCosts(50.0);
+
+        Costs updatedCosts = new Costs();
+
+        when(costsRepository.findById(1L)).thenReturn(Optional.of(costs));
+        when(costsRepository.save(costs)).thenReturn(costs);
+
+        Costs result = costsService.updateCosts(1L, updatedCosts);
+
+        assertNotNull(result);
+        assertEquals(500.0, result.getTravelCost());
+        assertEquals(200.0, result.getAccommodationCost());
+        assertEquals(50.0, result.getOtherCosts());
         verify(costsRepository, times(1)).findById(1L);
         verify(costsRepository, times(1)).save(costs);
     }
@@ -110,7 +164,7 @@ public class CostsServiceTest {
     @Test
     void testUpdateCostsNotFound() {
         Costs updatedCosts = new Costs();
-        updatedCosts.setTravelCost(700);
+        updatedCosts.setTravelCost(700.0);
 
         when(costsRepository.findById(1L)).thenReturn(Optional.empty());
 

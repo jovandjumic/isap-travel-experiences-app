@@ -28,7 +28,15 @@ public class CostsService {
 
     public Costs updateCosts(Long id, Costs updatedCosts) {
         return costsRepository.findById(id).map(existingCosts -> {
-            existingCosts.setTravelCost(updatedCosts.getTravelCost());
+            if (updatedCosts.getTravelCost() != null) {
+                existingCosts.setTravelCost(updatedCosts.getTravelCost());
+            }
+            if (updatedCosts.getAccommodationCost() != null) {
+                existingCosts.setAccommodationCost(updatedCosts.getAccommodationCost());
+            }
+            if (updatedCosts.getOtherCosts() != null) {
+                existingCosts.setOtherCosts(updatedCosts.getOtherCosts());
+            }
             return costsRepository.save(existingCosts);
         }).orElse(null);
     }

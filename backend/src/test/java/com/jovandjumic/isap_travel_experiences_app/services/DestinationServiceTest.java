@@ -1,5 +1,6 @@
 package com.jovandjumic.isap_travel_experiences_app.services;
 
+import com.jovandjumic.isap_travel_experiences_app.entities.Country;
 import com.jovandjumic.isap_travel_experiences_app.entities.Destination;
 import com.jovandjumic.isap_travel_experiences_app.repositories.DestinationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,13 +89,23 @@ public class DestinationServiceTest {
     }
 
     @Test
-    void testUpdateDestination() throws Exception {
+    void testUpdateDestinationAllFieldsUpdated() throws Exception {
         Destination destination = new Destination();
         setId(destination, 1L);
         destination.setLocationName("Paris");
+        destination.setLocationType("City");
+        destination.setRegionArea("Île-de-France");
+        Country france = new Country();
+        france.setCountryName("France");
+        destination.setCountry(france);
 
         Destination updatedDestination = new Destination();
         updatedDestination.setLocationName("Berlin");
+        updatedDestination.setLocationType("City-State");
+        updatedDestination.setRegionArea("Brandenburg");
+        Country germany = new Country();
+        germany.setCountryName("Germany");
+        updatedDestination.setCountry(germany);
 
         when(destinationRepository.findById(1L)).thenReturn(Optional.of(destination));
         when(destinationRepository.save(destination)).thenReturn(destination);
@@ -103,6 +114,68 @@ public class DestinationServiceTest {
 
         assertNotNull(result);
         assertEquals("Berlin", result.getLocationName());
+        assertEquals("City-State", result.getLocationType());
+        assertEquals("Brandenburg", result.getRegionArea());
+        assertEquals("Germany", result.getCountry().getCountryName());
+
+        verify(destinationRepository, times(1)).findById(1L);
+        verify(destinationRepository, times(1)).save(destination);
+    }
+
+    @Test
+    void testUpdateDestinationSomeFieldsUpdated() throws Exception {
+        Destination destination = new Destination();
+        setId(destination, 1L);
+        destination.setLocationName("Paris");
+        destination.setLocationType("City");
+        destination.setRegionArea("Île-de-France");
+        Country france = new Country();
+        france.setCountryName("France");
+        destination.setCountry(france);
+
+        Destination updatedDestination = new Destination();
+        updatedDestination.setLocationName("Berlin");
+        updatedDestination.setLocationType("City-State");
+
+        when(destinationRepository.findById(1L)).thenReturn(Optional.of(destination));
+        when(destinationRepository.save(destination)).thenReturn(destination);
+
+        Destination result = destinationService.updateDestination(1L, updatedDestination);
+
+        assertNotNull(result);
+        assertEquals("Berlin", result.getLocationName());
+        assertEquals("City-State", result.getLocationType());
+        assertEquals("Île-de-France", result.getRegionArea());
+        assertEquals("France", result.getCountry().getCountryName());
+
+        verify(destinationRepository, times(1)).findById(1L);
+        verify(destinationRepository, times(1)).save(destination);
+    }
+
+    @Test
+    void testUpdateDestinationNoFieldsUpdated() throws Exception {
+        Destination destination = new Destination();
+        setId(destination, 1L);
+        destination.setLocationName("Paris");
+        destination.setLocationType("City");
+        destination.setRegionArea("Île-de-France");
+        Country france = new Country();
+        france.setCountryName("France");
+        destination.setCountry(france);
+
+        Destination updatedDestination = new Destination();
+
+        when(destinationRepository.findById(1L)).thenReturn(Optional.of(destination));
+        when(destinationRepository.save(destination)).thenReturn(destination);
+
+        Destination result = destinationService.updateDestination(1L, updatedDestination);
+
+        assertNotNull(result);
+        assertEquals("Paris", result.getLocationName());
+        assertEquals("City", result.getLocationType());
+        assertEquals("Île-de-France", result.getRegionArea());
+        assertEquals("France", result.getCountry().getCountryName());
+
         verify(destinationRepository, times(1)).findById(1L);
         verify(destinationRepository, times(1)).save(destination);
     }

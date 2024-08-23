@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
+@Setter
+@Getter
 @Entity
 public class Experience {
 
@@ -22,17 +24,17 @@ public class Experience {
 
     @Setter
     @Getter
-    private int daysSpent;
+    private Integer daysSpent;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Costs costs;
 
-    private double rating;
+    private Double rating;
     private Date publishDate;
 
     @OneToMany(mappedBy = "experience")
     private List<Comment> comments;
 
-    private int inappropriateContentReports;
+    private Integer inappropriateContentReports;
 
 }

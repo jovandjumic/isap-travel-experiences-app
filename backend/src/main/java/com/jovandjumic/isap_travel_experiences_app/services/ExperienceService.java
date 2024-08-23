@@ -28,7 +28,18 @@ public class ExperienceService {
 
     public Experience updateExperience(Long id, Experience updatedExperience) {
         return experienceRepository.findById(id).map(existingExperience -> {
-            existingExperience.setDaysSpent(updatedExperience.getDaysSpent());
+            if (updatedExperience.getDestination() != null) {
+                existingExperience.setDestination(updatedExperience.getDestination());
+            }
+            if (updatedExperience.getDaysSpent() != null) {
+                existingExperience.setDaysSpent(updatedExperience.getDaysSpent());
+            }
+            if (updatedExperience.getCosts() != null) {
+                existingExperience.setCosts(updatedExperience.getCosts());
+            }
+            if (updatedExperience.getRating() != null) {
+                existingExperience.setRating(updatedExperience.getRating());
+            }
             return experienceRepository.save(existingExperience);
         }).orElse(null);
     }

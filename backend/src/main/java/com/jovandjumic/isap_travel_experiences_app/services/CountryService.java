@@ -28,7 +28,9 @@ public class CountryService {
 
     public Country updateCountry(Long id, Country updatedCountry) {
         return countryRepository.findById(id).map(existingCountry -> {
-            existingCountry.setCountryName(updatedCountry.getCountryName());
+            if (updatedCountry.getCountryName() != null) {
+                existingCountry.setCountryName(updatedCountry.getCountryName());
+            }
             return countryRepository.save(existingCountry);
         }).orElse(null);
     }

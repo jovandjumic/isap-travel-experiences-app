@@ -88,13 +88,23 @@ public class AppUserServiceTest {
     }
 
     @Test
-    void testUpdateUser() throws Exception {
+    void testUpdateUserAllFieldsUpdated() throws Exception {
         AppUser appUser = new AppUser();
         setId(appUser,1L);
         appUser.setUsername("johndoe");
+        appUser.setPassword("password");
+        appUser.setEmail("johndoe@example.com");
+        appUser.setFirstName("John");
+        appUser.setLastName("Doe");
+        appUser.setPhoneNumber("1234567890");
 
         AppUser updatedAppUser = new AppUser();
-        updatedAppUser.setUsername("johnsmith");
+        appUser.setUsername("janesmith");
+        appUser.setPassword("newpassword");
+        appUser.setEmail("janesmith@example.com");
+        appUser.setFirstName("Jane");
+        appUser.setLastName("Smith");
+        appUser.setPhoneNumber("0123456789");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(appUser));
         when(userRepository.save(appUser)).thenReturn(appUser);
@@ -102,7 +112,73 @@ public class AppUserServiceTest {
         AppUser result = userService.updateUser(1L, updatedAppUser);
 
         assertNotNull(result);
-        assertEquals("johnsmith", result.getUsername());
+        assertEquals("janesmith", result.getUsername());
+        assertEquals("newpassword", result.getPassword());
+        assertEquals("janesmith@example.com", result.getEmail());
+        assertEquals("Jane", result.getFirstName());
+        assertEquals("Smith", result.getLastName());
+        assertEquals("0123456789", result.getPhoneNumber());
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).save(appUser);
+    }
+
+    @Test
+    void testUpdateUserSomeFieldsUpdated() throws Exception {
+        AppUser appUser = new AppUser();
+        setId(appUser,1L);
+        appUser.setUsername("johndoe");
+        appUser.setPassword("password");
+        appUser.setEmail("johndoe@example.com");
+        appUser.setFirstName("John");
+        appUser.setLastName("Doe");
+        appUser.setPhoneNumber("1234567890");
+
+        AppUser updatedAppUser = new AppUser();
+        appUser.setUsername("janesmith");
+        appUser.setPassword("newpassword");
+        appUser.setEmail("janesmith@example.com");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(appUser));
+        when(userRepository.save(appUser)).thenReturn(appUser);
+
+        AppUser result = userService.updateUser(1L, updatedAppUser);
+
+        assertNotNull(result);
+        assertEquals("janesmith", result.getUsername());
+        assertEquals("newpassword", result.getPassword());
+        assertEquals("janesmith@example.com", result.getEmail());
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        assertEquals("1234567890", result.getPhoneNumber());
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).save(appUser);
+    }
+
+    @Test
+    void testUpdateUserNoFieldsUpdated() throws Exception {
+        AppUser appUser = new AppUser();
+        setId(appUser,1L);
+        appUser.setUsername("johndoe");
+        appUser.setPassword("password");
+        appUser.setEmail("johndoe@example.com");
+        appUser.setFirstName("John");
+        appUser.setLastName("Doe");
+        appUser.setPhoneNumber("1234567890");
+
+        AppUser updatedAppUser = new AppUser();
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(appUser));
+        when(userRepository.save(appUser)).thenReturn(appUser);
+
+        AppUser result = userService.updateUser(1L, updatedAppUser);
+
+        assertNotNull(result);
+        assertEquals("johndoe", result.getUsername());
+        assertEquals("password", result.getPassword());
+        assertEquals("johndoe@example.com", result.getEmail());
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        assertEquals("1234567890", result.getPhoneNumber());
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).save(appUser);
     }

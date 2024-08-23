@@ -108,6 +108,25 @@ public class CountryServiceTest {
     }
 
     @Test
+    void testUpdateCountryNoFieldsUpdated() throws Exception {
+        Country country = new Country();
+        setId(country, 1L);
+        country.setCountryName("France");
+
+        Country updatedCountry = new Country();
+
+        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
+        when(countryRepository.save(country)).thenReturn(country);
+
+        Country result = countryService.updateCountry(1L, updatedCountry);
+
+        assertNotNull(result);
+        assertEquals("France", result.getCountryName());
+        verify(countryRepository, times(1)).findById(1L);
+        verify(countryRepository, times(1)).save(country);
+    }
+
+    @Test
     void testUpdateCountryNotFound() {
         Country updatedCountry = new Country();
         updatedCountry.setCountryName("Germany");

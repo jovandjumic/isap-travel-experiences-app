@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
+@Setter
+@Getter
 @Entity
 public class AppUser {
 
@@ -13,8 +15,6 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
-    @Getter
     @Column(nullable = false, unique = true)
     private String username;
 

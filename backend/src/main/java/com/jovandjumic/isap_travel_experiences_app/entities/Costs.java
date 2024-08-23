@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 public class Costs {
 
@@ -16,15 +18,15 @@ public class Costs {
 
     @Getter
     @Setter
-    private double travelCost;
+    private Double travelCost;
     private String travelMode;
     private String travelRoute;
     private String travelCostType; // "Per person" or "Total"
 
-    private double accommodationCost;
+    private Double accommodationCost;
     private String accommodationCostType; // "Per person" or "Total"
 
-    private double otherCosts;
+    private Double otherCosts;
     private String otherCostsType; // "Per person" or "Total"
 
 }

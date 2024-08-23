@@ -28,7 +28,18 @@ public class DestinationService {
 
     public Destination updateDestination(Long id, Destination updatedDestination) {
         return destinationRepository.findById(id).map(existingDestination -> {
-            existingDestination.setLocationName(updatedDestination.getLocationName());
+            if (updatedDestination.getLocationName() != null) {
+                existingDestination.setLocationName(updatedDestination.getLocationName());
+            }
+            if (updatedDestination.getLocationType() != null) {
+                existingDestination.setLocationType(updatedDestination.getLocationType());
+            }
+            if (updatedDestination.getRegionArea() != null) {
+                existingDestination.setRegionArea(updatedDestination.getRegionArea());
+            }
+            if (updatedDestination.getCountry() != null) {
+                existingDestination.setCountry(updatedDestination.getCountry());
+            }
             return destinationRepository.save(existingDestination);
         }).orElse(null);
     }
