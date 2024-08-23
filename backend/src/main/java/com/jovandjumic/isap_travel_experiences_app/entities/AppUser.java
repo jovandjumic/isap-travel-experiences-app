@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.Date;
 
 @Entity
-public class User {
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

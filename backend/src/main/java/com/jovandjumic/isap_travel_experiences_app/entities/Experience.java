@@ -15,7 +15,7 @@ public class Experience {
     private Long id;
 
     @ManyToOne
-    private User user;
+    private AppUser appUser;
 
     @ManyToOne
     private Destination destination;

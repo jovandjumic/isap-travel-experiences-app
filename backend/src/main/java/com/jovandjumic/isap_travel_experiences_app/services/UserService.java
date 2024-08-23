@@ -1,6 +1,6 @@
 package com.jovandjumic.isap_travel_experiences_app.services;
 
-import com.jovandjumic.isap_travel_experiences_app.entities.User;
+import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
 import com.jovandjumic.isap_travel_experiences_app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,21 +14,21 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public AppUser createUser(AppUser appUser) {
+        return userRepository.save(appUser);
     }
 
-    public Optional<User> getUserById(Long id) {
+    public Optional<AppUser> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    public List<User> getAllUsers() {
+    public List<AppUser> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public User updateUser(Long id, User updatedUser) {
+    public AppUser updateUser(Long id, AppUser updatedAppUser) {
         return userRepository.findById(id).map(existingUser -> {
-            existingUser.setUsername(updatedUser.getUsername());
+            existingUser.setUsername(updatedAppUser.getUsername());
             return userRepository.save(existingUser);
         }).orElse(null);
     }
@@ -37,7 +37,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User findByUsername(String username) {
+    public AppUser findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 }
