@@ -1,12 +1,14 @@
 package com.jovandjumic.isap_travel_experiences_app.controllers;
 
 import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
+import com.jovandjumic.isap_travel_experiences_app.dto.ChangePasswordRequest;
 import com.jovandjumic.isap_travel_experiences_app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +49,15 @@ public class UserController {
     public ResponseEntity<List<AppUser>> getAllUsers() {
         List<AppUser> appUsers = userService.getAllUsers();
         return new ResponseEntity<>(appUsers, HttpStatus.OK);
+    }
+
+    @PatchMapping
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            Principal connectedUser
+    ) {
+        userService.changePassword(request, connectedUser);
+        return ResponseEntity.ok().build();
     }
 }
 

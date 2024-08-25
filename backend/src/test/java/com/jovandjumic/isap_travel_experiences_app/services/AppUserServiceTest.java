@@ -211,12 +211,12 @@ public class AppUserServiceTest {
         AppUser appUser = new AppUser();
         appUser.setUsername("johndoe");
 
-        when(userRepository.findByUsername("johndoe")).thenReturn(appUser);
+        when(userRepository.findByUsername("johndoe")).thenReturn(Optional.of(appUser));
 
-        AppUser foundAppUser = userService.findByUsername("johndoe");
+        Optional<AppUser> foundAppUser = userService.findByUsername("johndoe");
 
         assertNotNull(foundAppUser);
-        assertEquals("johndoe", foundAppUser.getUsername());
+        assertEquals("johndoe", foundAppUser.get().getUsername());
         verify(userRepository, times(1)).findByUsername("johndoe");
     }
 
@@ -224,7 +224,7 @@ public class AppUserServiceTest {
     void testFindByUsernameNotFound() {
         when(userRepository.findByUsername("johndoe")).thenReturn(null);
 
-        AppUser foundAppUser = userService.findByUsername("johndoe");
+        Optional<AppUser> foundAppUser = userService.findByUsername("johndoe");
 
         assertNull(foundAppUser);
         verify(userRepository, times(1)).findByUsername("johndoe");
