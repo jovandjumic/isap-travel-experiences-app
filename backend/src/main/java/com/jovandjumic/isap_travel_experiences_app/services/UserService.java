@@ -3,6 +3,7 @@ package com.jovandjumic.isap_travel_experiences_app.services;
 import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
 import com.jovandjumic.isap_travel_experiences_app.repositories.UserRepository;
 import com.jovandjumic.isap_travel_experiences_app.dto.ChangePasswordRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     @Autowired
