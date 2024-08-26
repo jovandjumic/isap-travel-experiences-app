@@ -1,5 +1,7 @@
 package com.jovandjumic.isap_travel_experiences_app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.jovandjumic.isap_travel_experiences_app.enums.TokenType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,8 +30,8 @@ public class Token {
 
     public boolean expired;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "app_user_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonManagedReference
     public AppUser appUser;
 
 }

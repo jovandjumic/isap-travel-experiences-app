@@ -19,7 +19,7 @@ public class Experience {
     @ManyToOne
     private AppUser appUser;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Destination destination;
 
     @Setter

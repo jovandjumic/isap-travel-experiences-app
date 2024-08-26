@@ -6,6 +6,9 @@ import com.jovandjumic.isap_travel_experiences_app.dto.ChangePasswordRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
@@ -81,6 +84,15 @@ public class UserService {
         appUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
         userRepository.save(appUser);
+    }
+
+    public AppUser getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return (AppUser) principal;
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 
 }

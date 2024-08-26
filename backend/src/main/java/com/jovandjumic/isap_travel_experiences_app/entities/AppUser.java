@@ -1,8 +1,12 @@
 package com.jovandjumic.isap_travel_experiences_app.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jovandjumic.isap_travel_experiences_app.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -40,7 +44,8 @@ public class AppUser implements UserDetails {
     private Role role;
     private Boolean accountStatus = true;
 
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Token> tokens;
 
     @Override

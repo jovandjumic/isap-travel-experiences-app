@@ -19,7 +19,7 @@ public class Destination {
     private String locationType;
     private String regionArea;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Country country;
 
 }

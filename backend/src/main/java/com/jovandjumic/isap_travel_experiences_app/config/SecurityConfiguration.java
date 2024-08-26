@@ -40,9 +40,6 @@ public class SecurityConfiguration {
                         req
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .requestMatchers(GET,"/api/experiences/**").permitAll()
-                                .requestMatchers(POST,"/api/experiences/**").hasAnyRole(ADMIN.name())
-                                .requestMatchers(PUT,"/api/experiences/**").hasAnyRole(ADMIN.name())
-                                .requestMatchers(DELETE,"/api/experiences/**").hasAnyRole(ADMIN.name())
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

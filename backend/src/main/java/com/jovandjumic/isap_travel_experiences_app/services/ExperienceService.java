@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,11 @@ public class ExperienceService {
     @Autowired
     private ExperienceRepository experienceRepository;
 
+    @Autowired
+    private UserService userService;
+
     public Experience createExperience(Experience experience) {
+        experience.setAppUser(userService.getCurrentUser());
         return experienceRepository.save(experience);
     }
 
@@ -36,6 +41,9 @@ public class ExperienceService {
 
     public Experience updateExperience(Long id, Experience updatedExperience) {
         return experienceRepository.findById(id).map(existingExperience -> {
+            if (!existingExperience.getAppUser().getUsername().equals(userService.getCurrentUser().getUsername())) {
+                throw new AccessDeniedException("You do not have permission to update this experience");
+            }
             if (updatedExperience.getDestination() != null) {
                 existingExperience.setDestination(updatedExperience.getDestination());
             }
@@ -53,6 +61,14 @@ public class ExperienceService {
     }
 
     public void deleteExperience(Long id) {
+        Experience existingExperience = experienceRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Experience not found"));
+
+        // Provera vlasništva nad Experience entitetom
+        if (!existingExperience.getAppUser().getUsername().equals(userService.getCurrentUser().getUsername())) {
+            throw new AccessDeniedException("You do not have permission to delete this experience");
+        }
+
         experienceRepository.deleteById(id);
     }
 
