@@ -102,7 +102,7 @@ public class ExperienceServiceTest {
         costs.setAccommodationCost(500.0);
         costs.setOtherCosts(200.0);
         experience.setCosts(costs);
-        experience.setRating(4.5);
+        experience.setLikes(4.5);
 
         Experience updatedExperience = new Experience();
         Destination berlin = new Destination();
@@ -114,7 +114,7 @@ public class ExperienceServiceTest {
         updatedCosts.setAccommodationCost(600.0);
         updatedCosts.setOtherCosts(250.0);
         updatedExperience.setCosts(updatedCosts);
-        updatedExperience.setRating(4.8);
+        updatedExperience.setLikes(4.8);
 
         when(experienceRepository.findById(1L)).thenReturn(Optional.of(experience));
         when(experienceRepository.save(experience)).thenReturn(experience);
@@ -127,7 +127,7 @@ public class ExperienceServiceTest {
         assertEquals(1200.0, result.getCosts().getTravelCost());
         assertEquals(600.0, result.getCosts().getAccommodationCost());
         assertEquals(250.0, result.getCosts().getOtherCosts());
-        assertEquals(4.8, result.getRating());
+        assertEquals(4.8, result.getLikes());
         verify(experienceRepository, times(1)).findById(1L);
         verify(experienceRepository, times(1)).save(experience);
     }
@@ -145,7 +145,7 @@ public class ExperienceServiceTest {
         costs.setAccommodationCost(500.0);
         costs.setOtherCosts(200.0);
         experience.setCosts(costs);
-        experience.setRating(4.5);
+        experience.setLikes(4.5);
 
         Experience updatedExperience = new Experience();
         Costs updatedCosts = new Costs();
@@ -153,7 +153,7 @@ public class ExperienceServiceTest {
         updatedCosts.setAccommodationCost(600.0);
         updatedCosts.setOtherCosts(250.0);
         updatedExperience.setCosts(updatedCosts);
-        updatedExperience.setRating(4.8);
+        updatedExperience.setLikes(4.8);
 
         when(experienceRepository.findById(1L)).thenReturn(Optional.of(experience));
         when(experienceRepository.save(experience)).thenReturn(experience);
@@ -166,7 +166,7 @@ public class ExperienceServiceTest {
         assertEquals(1200.0, result.getCosts().getTravelCost());
         assertEquals(600.0, result.getCosts().getAccommodationCost());
         assertEquals(250.0, result.getCosts().getOtherCosts());
-        assertEquals(4.8, result.getRating());
+        assertEquals(4.8, result.getLikes());
         verify(experienceRepository, times(1)).findById(1L);
         verify(experienceRepository, times(1)).save(experience);
     }
@@ -184,7 +184,7 @@ public class ExperienceServiceTest {
         costs.setAccommodationCost(500.0);
         costs.setOtherCosts(200.0);
         experience.setCosts(costs);
-        experience.setRating(4.5);
+        experience.setLikes(4.5);
 
         Experience updatedExperience = new Experience();
 
@@ -199,7 +199,7 @@ public class ExperienceServiceTest {
         assertEquals(1000.0, result.getCosts().getTravelCost());
         assertEquals(500.0, result.getCosts().getAccommodationCost());
         assertEquals(200.0, result.getCosts().getOtherCosts());
-        assertEquals(4.5, result.getRating());
+        assertEquals(4.5, result.getLikes());
         verify(experienceRepository, times(1)).findById(1L);
         verify(experienceRepository, times(1)).save(experience);
     }

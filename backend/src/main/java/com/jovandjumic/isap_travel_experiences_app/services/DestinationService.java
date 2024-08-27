@@ -1,6 +1,8 @@
 package com.jovandjumic.isap_travel_experiences_app.services;
 
+import com.jovandjumic.isap_travel_experiences_app.entities.Country;
 import com.jovandjumic.isap_travel_experiences_app.entities.Destination;
+import com.jovandjumic.isap_travel_experiences_app.repositories.CountryRepository;
 import com.jovandjumic.isap_travel_experiences_app.repositories.DestinationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,14 @@ public class DestinationService {
     @Autowired
     private DestinationRepository destinationRepository;
 
+    @Autowired
+    private CountryRepository countryRepository;
+
     public Destination createDestination(Destination destination) {
+        String countryName = destination.getCountry().getCountryName();
+        Country country = countryRepository.findByCountryName(countryName)
+                .orElseThrow(() -> new IllegalArgumentException("Country not found"));
+        destination.setCountry(country);
         return destinationRepository.save(destination);
     }
 
@@ -38,6 +47,10 @@ public class DestinationService {
                 existingDestination.setRegionArea(updatedDestination.getRegionArea());
             }
             if (updatedDestination.getCountry() != null) {
+                String countryName = updatedDestination.getCountry().getCountryName();
+                Country country = countryRepository.findByCountryName(countryName)
+                        .orElseThrow(() -> new IllegalArgumentException("Country not found"));
+                updatedDestination.setCountry(country);
                 existingDestination.setCountry(updatedDestination.getCountry());
             }
             return destinationRepository.save(existingDestination);

@@ -2,6 +2,7 @@ package com.jovandjumic.isap_travel_experiences_app.Specification;
 
 import com.jovandjumic.isap_travel_experiences_app.entities.Destination;
 import com.jovandjumic.isap_travel_experiences_app.entities.Experience;
+import jakarta.persistence.criteria.Expression;
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -30,8 +31,14 @@ public class ExperienceSpecifications {
                 criteriaBuilder.between(root.join("costs").get("totalCost"), minCost, maxCost);
     }
 
-    public static Specification<Experience> hasRatingBetween(Double minRating, Double maxRating) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.between(root.get("rating"), minRating, maxRating);
+    public static Specification<Experience> hasCostPerPersonBetween(Double minCostPerPerson, Double maxCostPerPerson) {
+        return (root, query, criteriaBuilder) -> {
+            Expression<Double> costPerPersonExpression = criteriaBuilder.function(
+                    "getCostPerPerson",
+                    Double.class,
+                    root
+            );
+            return criteriaBuilder.between(costPerPersonExpression, minCostPerPerson, maxCostPerPerson);
+        };
     }
 }

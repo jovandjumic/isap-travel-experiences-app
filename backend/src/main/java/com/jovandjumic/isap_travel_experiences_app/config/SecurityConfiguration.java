@@ -14,8 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
-import static com.jovandjumic.isap_travel_experiences_app.enums.Permission.*;
-import static com.jovandjumic.isap_travel_experiences_app.enums.Role.ADMIN;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration

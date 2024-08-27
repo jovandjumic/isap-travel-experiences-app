@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,12 +30,56 @@ public class Experience {
     @OneToOne(cascade = CascadeType.ALL)
     private Costs costs;
 
-    private Double rating;
+    private Integer likes = 0;
+
     private Date createdAt;
 
-    @OneToMany(mappedBy = "experience")
-    private List<Comment> comments;
+    private Integer numberOfPeople;
 
-    private Integer inappropriateContentReports;
+    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @ManyToMany
+    private List<AppUser> likedByUsers = new ArrayList<>();
+
+    @ElementCollection
+    private List<String> images = new ArrayList<>();
+
+    private Integer inappropriateContentReports = 0;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
+
+    public boolean toggleLike(AppUser user) {
+        if (likedByUsers.contains(user)) {
+            likedByUsers.remove(user);
+            return false;
+        } else {
+            likedByUsers.add(user);
+            return true;
+        }
+    }
+
+    public int getLikesCount() {
+        return likedByUsers.size();
+    }
+
+    public void addImage(String imageUrl) {
+        images.add(imageUrl);
+    }
+
+    public void removeImage(String imageUrl) {
+        images.remove(imageUrl);
+    }
+
+    @Transient
+    public Double getCostPerPerson() {
+        if (this.costs == null || this.costs.getTotalCost() == null || this.numberOfPeople == null || this.numberOfPeople == 0) {
+            return null;
+        }
+        return this.costs.getTotalCost() / this.numberOfPeople;
+    }
 
 }

@@ -18,13 +18,10 @@ public class Costs {
     private Double travelCost;
     private String travelMode;
     private String travelRoute;
-    private String travelCostType; // "Per person" or "Total"
 
     private Double accommodationCost;
-    private String accommodationCostType; // "Per person" or "Total"
 
     private Double otherCosts;
-    private String otherCostsType; // "Per person" or "Total"
 
     private Double totalCost;
 

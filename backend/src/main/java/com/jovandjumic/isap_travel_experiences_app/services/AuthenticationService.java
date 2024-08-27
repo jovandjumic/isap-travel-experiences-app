@@ -7,6 +7,7 @@ import com.jovandjumic.isap_travel_experiences_app.dto.AuthenticationResponse;
 import com.jovandjumic.isap_travel_experiences_app.dto.RegisterRequest;
 import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
 import com.jovandjumic.isap_travel_experiences_app.entities.Token;
+import com.jovandjumic.isap_travel_experiences_app.enums.Role;
 import com.jovandjumic.isap_travel_experiences_app.enums.TokenType;
 import com.jovandjumic.isap_travel_experiences_app.repositories.TokenRepository;
 import com.jovandjumic.isap_travel_experiences_app.repositories.UserRepository;
@@ -44,7 +45,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(Role.USER)
                 .build();
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
