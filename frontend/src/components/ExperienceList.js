@@ -2,19 +2,26 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Filters from './Filters';
 import './ExperienceList.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbsUp, faComment } from '@fortawesome/free-solid-svg-icons';
 
 const ExperienceList = () => {
     const [experiences, setExperiences] = useState([]);
     const [filters, setFilters] = useState({});
+    const [page, setPage] = useState(0); // Trenutna stranica
+    const [totalPages, setTotalPages] = useState(1); // Ukupan broj stranica (ako je dostupan iz backend odgovora)
 
     useEffect(() => {
         fetchExperiences();
-    }, [filters]);
+    }, [filters, page]);
 
     const fetchExperiences = async () => {
         try {
-            const response = await api.get('/experiences', { params: filters });
+            const response = await api.get('/experiences/search', { 
+                params: { ...filters, page } // Prosleđujemo trenutnu stranicu kao parametar
+            });
             setExperiences(response.data.content);
+            setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error("Error fetching experiences:", error);
         }
@@ -22,6 +29,13 @@ const ExperienceList = () => {
 
     const handleFilterChange = (newFilters) => {
         setFilters(newFilters);
+        setPage(0); // Resetujemo na prvu stranicu prilikom promene filtera
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) {
+            setPage(newPage);
+        }
     };
 
     const truncateDescription = (description, maxLength) => {
@@ -83,14 +97,25 @@ const ExperienceList = () => {
                                         </p>
                                     </div>
                                     <div className="experience-actions-container">
-                                        <button className="like-button">Like ({experience.likes || 0})</button>
-                                        <span className="experience-comments">{experience.comments?.length || 0} komentara</span>
+                                        <button className="like-button">
+                                            <FontAwesomeIcon icon={faThumbsUp} className="action-icon" />
+                                            ({experience.likes || 0})
+                                        </button>
+                                        <button className="comment-button">
+                                            <FontAwesomeIcon icon={faComment} className="action-icon" />
+                                            {experience.comments?.length || 0}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </li>
                     ))}
                 </ul>
+                <div className="pagination">
+                    <button onClick={() => handlePageChange(page - 1)} disabled={page === 0}>Prethodna</button>
+                    <span>Stranica {page + 1} od {totalPages}</span>
+                    <button onClick={() => handlePageChange(page + 1)} disabled={page === totalPages - 1}>Sledeća</button>
+                </div>
             </div>
         </div>
     );

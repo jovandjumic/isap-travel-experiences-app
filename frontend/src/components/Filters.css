@@ -5,7 +5,7 @@
     background-color: #FFE66D;
     border: 1px solid #ddd;
     color: #292F36;
-    border-radius: 8px;
+    border-radius: 0 0 8px 8px;
 }
 
 .filters-row {
@@ -41,9 +41,40 @@
     margin-top: 20px;
     margin-left: 1.2%;
     width: 100%;
-
+    transition: background-color 0.3s ease;
 }
 
 .filters-row button:hover {
-    background-color: #8df1ea;
+    background-color: #3bb9ac;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center; /* Centriranje paginacije */
+    align-items: center;
+    background-color: #FFE66D;
+    padding: 10px; /* Razmak unutar paginacije */
+
+    border-radius: 8px; /* Zaobljeni uglovi */
+}
+
+.pagination button {
+    background-color: #4ECDC4;
+    color: #292F36;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 0 5px; /* Razmak između dugmića */
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    margin: 0 10px; /* Razmak između teksta i dugmića */
+    font-weight: bold;
+    color: #292F36;
 }

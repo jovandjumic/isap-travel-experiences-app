@@ -9,16 +9,29 @@ import jakarta.persistence.criteria.JoinType;
 
 public class ExperienceSpecifications {
 
-    public static Specification<Experience> hasLocation(String location) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Experience, Destination> destinationJoin = root.join("destination", JoinType.INNER);
-            return criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(destinationJoin.get("locationName")), "%" + location.toLowerCase() + "%"),
-                    criteriaBuilder.like(criteriaBuilder.lower(destinationJoin.get("regionArea")), "%" + location.toLowerCase() + "%"),
-                    criteriaBuilder.like(criteriaBuilder.lower(destinationJoin.join("country").get("countryName")), "%" + location.toLowerCase() + "%"),
-                    criteriaBuilder.like(criteriaBuilder.lower(destinationJoin.join("country").get("continent")), "%" + location.toLowerCase() + "%")
-            );
-        };
+    public static Specification<Experience> hasLocationName(String locationName) {
+        return (root, query, criteriaBuilder) ->
+            criteriaBuilder.like(root.get("destination").get("locationName"), locationName);
+    }
+
+    public static Specification<Experience> hasRegionArea(String locationName) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("destination").get("regionArea"), locationName);
+    }
+
+    public static Specification<Experience> hasCountry(String locationName) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("destination").get("country").get("countryName"), locationName);
+    }
+
+    public static Specification<Experience> hasContinent(String locationName) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("destination").get("country").get("continent"), locationName);
+    }
+
+    public static Specification<Experience> hasLocationType(String locationType) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("destination").get("locationType"), locationType);
     }
 
     public static Specification<Experience> hasDaysSpentBetween(Integer minDays, Integer maxDays) {

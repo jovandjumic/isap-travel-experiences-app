@@ -81,15 +81,35 @@ public class ExperienceService {
         experienceRepository.deleteById(id);
     }
 
-    public Page<Experience> searchExperiences(String location,
+    public Page<Experience> searchExperiences(String locationName,
+                                              String regionArea,
+                                              String country,
+                                              String continent,
+                                              String locationType,
                                               Integer minDays, Integer maxDays,
                                               Double minCost, Double maxCost,
                                               Double minCostPerPerson, Double maxCostPerPerson,
                                               Pageable pageable) {
         Specification<Experience> specification = Specification.where(null);
 
-        if (location != null && !location.isEmpty()) {
-            specification = specification.and(ExperienceSpecifications.hasLocation(location));
+        if (locationName != null && !locationName.isEmpty()) {
+            specification = specification.and(ExperienceSpecifications.hasLocationName(locationName));
+        }
+
+        if (regionArea != null && !regionArea.isEmpty()) {
+            specification = specification.and(ExperienceSpecifications.hasRegionArea(regionArea));
+        }
+
+        if (country != null && !country.isEmpty()) {
+            specification = specification.and(ExperienceSpecifications.hasCountry(country));
+        }
+
+        if (continent != null && !continent.isEmpty()) {
+            specification = specification.and(ExperienceSpecifications.hasContinent(continent));
+        }
+
+        if (locationType != null && !locationType.isEmpty()) {
+            specification = specification.and(ExperienceSpecifications.hasLocationType(locationType));
         }
 
         if (minDays != null && maxDays != null) {
