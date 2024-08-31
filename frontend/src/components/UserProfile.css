@@ -1,0 +1,49 @@
+.user-profile {
+    width: 100%;
+    max-width: 1500px; /* Povećan max-width */
+    margin: 0 auto;
+    padding: 30px; /* Povećan padding za bolji raspored */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15); /* Povećana senka */
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px; /* Povećana margina ispod headera */
+    background-color: #09B5EB;
+    padding: 30px; /* Povećan padding unutar headera */
+    border-radius: 8px;
+}
+
+.profile-picture {
+    width: 120px; /* Povećana veličina slike profila */
+    height: 120px; /* Povećana visina slike profila */
+    border-radius: 50%;
+    margin-right: 30px; /* Povećana margina desno */
+    object-fit: cover;
+}
+
+.user-info {
+    color: #fff;
+}
+
+.user-info h2 {
+    margin: 0;
+    font-size: 1.8em; /* Povećana veličina fonta za ime */
+}
+
+.user-info p {
+    margin: 8px 0; /* Povećana margina između paragrafa */
+}
+
+.user-bio {
+    font-style: italic;
+    margin-top: 15px; /* Povećana margina iznad biografije */
+}
+
+h3 {
+    margin-top: 50px; /* Povećana margina iznad naslova */
+    color: #2E3532;
+}
