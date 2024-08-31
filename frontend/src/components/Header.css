@@ -1,9 +1,8 @@
 .app-header {
-    background-color: #FFE66D;
+    background-color: #1474D4;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #ddd;
     border-bottom: none;
 }
 
@@ -34,8 +33,8 @@
     justify-content: center;
     margin: 0 20px 0 10px;
     padding: 20px 0;
-    background-color: #4ECDC4;
-    color: #292F36;
+    background-color: #09E0DA;
+    color: #2E3532;
     text-decoration: none;
     text-align: center;
     border: none;
@@ -52,5 +51,5 @@
 }
 
 .nav-button:hover {
-    background-color: #3bb9ac;
+    background-color: #07BFB8;
 }

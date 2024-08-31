@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api'; // Uvoz API servisa za slanje zahteva
 import './RegistrationForm.css'; // CSS za stilizaciju
+import { useNavigate } from 'react-router-dom';
 
 const RegistrationForm = () => {
     const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const RegistrationForm = () => {
         username: '',
         password: ''
     });
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -28,6 +31,10 @@ const RegistrationForm = () => {
             console.error('Greška prilikom registracije:', error);
             alert('Registracija nije uspela. Molimo pokušajte ponovo.');
         }
+    };
+
+    const handleBackClick = () => {
+        navigate('/experiences'); // Navigacija na početnu stranu
     };
 
     return (
@@ -90,6 +97,7 @@ const RegistrationForm = () => {
                     />
                 </div>
                 <button type="submit" className="submit-button">Registruj se</button>
+                <button type="button" className="back-button" onClick={handleBackClick}>Nazad</button>
             </form>
         </div>
     );

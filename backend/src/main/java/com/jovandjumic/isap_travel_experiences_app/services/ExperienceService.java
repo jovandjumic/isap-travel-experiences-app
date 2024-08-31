@@ -81,7 +81,8 @@ public class ExperienceService {
         experienceRepository.deleteById(id);
     }
 
-    public Page<Experience> searchExperiences(String locationName,
+    public Page<Experience> searchExperiences(Long userId,
+                                                String locationName,
                                               String regionArea,
                                               String country,
                                               String continent,
@@ -91,6 +92,10 @@ public class ExperienceService {
                                               Double minCostPerPerson, Double maxCostPerPerson,
                                               Pageable pageable) {
         Specification<Experience> specification = Specification.where(null);
+
+        if (userId != null) {
+            specification = specification.and(ExperienceSpecifications.hasUser(userId));
+        }
 
         if (locationName != null && !locationName.isEmpty()) {
             specification = specification.and(ExperienceSpecifications.hasLocationName(locationName));

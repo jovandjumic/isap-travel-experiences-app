@@ -64,6 +64,7 @@ public class ExperienceController {
 
     @GetMapping("/search")
     public Page<Experience> searchExperiences(
+            @RequestParam(required = false) Long userId,
             @RequestParam(required = false) String locationName,
             @RequestParam(required = false) String regionArea,
             @RequestParam(required = false) String country,
@@ -76,7 +77,7 @@ public class ExperienceController {
             @RequestParam(required = false) Double minCostPerPerson,
             @RequestParam(required = false) Double maxCostPerPerson,
             Pageable pageable) {
-        return experienceService.searchExperiences(locationName, regionArea, country, continent, locationType, minDays, maxDays, minCost, maxCost, minCostPerPerson, maxCostPerPerson, pageable);
+        return experienceService.searchExperiences(userId, locationName, regionArea, country, continent, locationType, minDays, maxDays, minCost, maxCost, minCostPerPerson, maxCostPerPerson, pageable);
     }
 
     @PostMapping("/{id}/like")

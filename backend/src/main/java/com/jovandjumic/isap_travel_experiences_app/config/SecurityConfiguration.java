@@ -40,12 +40,13 @@ public class SecurityConfiguration {
                         req
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .requestMatchers(GET,"/api/experiences/**").permitAll()
+                                .requestMatchers(GET,"/api/users/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout(logout -> logout.logoutUrl("/api/v1/auth/logout").addLogoutHandler(logoutHandler)
+                .logout(logout -> logout.logoutUrl("/api/auth/logout").addLogoutHandler(logoutHandler)
                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
         );
 

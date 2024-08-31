@@ -4,8 +4,9 @@ import Filters from './Filters';
 import './ExperienceList.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faComment } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
-const ExperienceList = () => {
+const ExperienceList = ({ currentUser }) => {
     const [experiences, setExperiences] = useState([]);
     const [filters, setFilters] = useState({});
     const [page, setPage] = useState(0); // Trenutna stranica
@@ -13,13 +14,15 @@ const ExperienceList = () => {
 
     useEffect(() => {
         fetchExperiences();
-    }, [filters, page]);
+    }, [filters, page, currentUser]);
 
     const fetchExperiences = async () => {
         try {
-            const response = await api.get('/experiences/search', { 
-                params: { ...filters, page } // Prosleđujemo trenutnu stranicu kao parametar
-            });
+            const params = { ...filters, page };
+            if (currentUser) {
+                params.userId = currentUser.id; // Filtriramo po ID-ju korisnika ako je definisan
+            }
+            const response = await api.get('/experiences/search', { params });
             setExperiences(response.data.content);
             setTotalPages(response.data.totalPages);
         } catch (error) {
@@ -63,7 +66,9 @@ const ExperienceList = () => {
                             </div>
                             <div className="experience-main-content">
                                 <div className="experience-header">
-                                    <span><strong>{experience.appUser?.username || 'Nepoznat autor'}</strong></span>
+                                <Link to={`/users/${experience.appUser?.id}`}>
+    <strong>{experience.appUser?.username || 'Nepoznat autor'}</strong>
+</Link>
                                     <span>{experience.createdAt ? new Date(experience.createdAt).toLocaleDateString() : ''}</span>
                                 </div>
                                 <div className="experience-body">

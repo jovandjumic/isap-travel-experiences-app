@@ -9,6 +9,11 @@ import jakarta.persistence.criteria.JoinType;
 
 public class ExperienceSpecifications {
 
+    public static Specification<Experience> hasUser(Long userId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("appUser").get("id"), userId);
+    }
+
     public static Specification<Experience> hasLocationName(String locationName) {
         return (root, query, criteriaBuilder) ->
             criteriaBuilder.like(root.get("destination").get("locationName"), locationName);

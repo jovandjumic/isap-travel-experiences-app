@@ -1,10 +1,43 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+// Header.js
+import React, { useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faSignInAlt, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSignInAlt, faUserPlus, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import './Header.css';
+import { AuthContext } from '../contexts/AuthContextProvider';
+import api from '../services/api';
 
 const Header = () => {
+
+    const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        try {
+            // Send a GET request to the logout endpoint
+            await api.get('auth/logout');
+            
+            // Clear tokens from local storage
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            
+            // Update the authentication state
+            setIsAuthenticated(false);
+            
+            // Notify the user
+            alert('Odjava uspešna!');
+            
+            // Redirect to a specific page, for example, experiences
+            const redirectTo = location.state?.from?.pathname || '/experiences';
+            navigate(redirectTo, { replace: true });
+        } catch (error) {
+            console.error('Error during logout:', error);
+            // Optionally, display an error message to the user
+        }
+    };
+
     return (
         <header className="app-header">
             <div className="header-container">
@@ -14,14 +47,27 @@ const Header = () => {
                     </Link>
                 </div>
                 <nav className="nav-links">
+                    {isAuthenticated ? (
+                        <button onClick={handleLogout} className="nav-button">
+                            <FontAwesomeIcon icon={faSignOutAlt} className="button-icon" />
+                            <span>Moj Profil</span>
+                        </button>
+                    ):<></>}
                     <Link to="/add-experience" className="nav-button">
                         <FontAwesomeIcon icon={faPlus} className="button-icon" />
                         <span>Dodaj Iskustvo</span>
                     </Link>
-                    <Link to="/login" className="nav-button">
-                        <FontAwesomeIcon icon={faSignInAlt} className="button-icon" />
-                        <span>Prijava</span>
-                    </Link>
+                    {isAuthenticated ? (
+                        <button onClick={handleLogout} className="nav-button">
+                            <FontAwesomeIcon icon={faSignOutAlt} className="button-icon" />
+                            <span>Odjava</span>
+                        </button>
+                    ) : (
+                        <Link to="/login" className="nav-button">
+                            <FontAwesomeIcon icon={faSignInAlt} className="button-icon" />
+                            <span>Prijava</span>
+                        </Link>
+                    )}
                     <Link to="/register" className="nav-button">
                         <FontAwesomeIcon icon={faUserPlus} className="button-icon" />
                         <span>Registracija</span>

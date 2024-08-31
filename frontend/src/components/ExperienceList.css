@@ -2,8 +2,8 @@
     list-style-type: none;
     padding: 0;
     margin: 0;
-    background-color: #F7FFF7;
-    color: #292F36;
+    background-color: white;
+    color: #2E3532;
 }
 
 .experience-item {
@@ -55,7 +55,7 @@
 }
 
 .experience-title {
-    color: #FF6B6B;
+    color: #0F09E0;
     font-size: 2em; /* Povećan font za naslov */
     margin: 0 0 10px 0;
 }
@@ -80,7 +80,7 @@
     font-size: 3em; /* Povećan font za cenu */
     font-weight: bold;
     margin: 0;
-    color: #4ECDC4;
+    color: #0F09E0;
 }
 
 .experience-description-container {
@@ -108,8 +108,7 @@
 .like-button, .comment-button {
     display: flex;
     align-items: center;
-    background-color: #4ECDC4;
-    color: #292F36;
+    background-color: #09E0DA;
     border: none;
     border-radius: 4px;
     padding: 8px 12px;
@@ -119,7 +118,7 @@
 }
 
 .like-button:hover, .comment-button:hover {
-    background-color: #3bb9ac;
+    background-color: #07BFB8;
 }
 
 .action-icon {
