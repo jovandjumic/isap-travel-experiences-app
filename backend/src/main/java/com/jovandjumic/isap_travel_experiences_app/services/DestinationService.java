@@ -20,10 +20,6 @@ public class DestinationService {
     private CountryRepository countryRepository;
 
     public Destination createDestination(Destination destination) {
-        String countryName = destination.getCountry().getCountryName();
-        Country country = countryRepository.findByCountryName(countryName)
-                .orElseThrow(() -> new IllegalArgumentException("Country not found"));
-        destination.setCountry(country);
         return destinationRepository.save(destination);
     }
 

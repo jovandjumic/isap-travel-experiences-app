@@ -1,10 +1,10 @@
 .filters-container {
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 30px 20px 20px 20px;
     background-color: #09B5EB;
     color: #292F36;
-    border-radius: 0 0 8px 8px;
+    border-radius: 8px;
 }
 
 .filters-row {
@@ -16,7 +16,7 @@
 .filters-row label {
     margin-left: 1.2%;
     font-weight: bold;
-    width: 10%;
+    width: 15%;
 }
 
 .filters-row input,
@@ -25,7 +25,7 @@
     padding: 5px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    width: 21.5%; /* Sva polja imaju konzistentnu širinu */
+    width: 20%; /* Sva polja imaju konzistentnu širinu */
     box-sizing: border-box;
 }
 
@@ -63,7 +63,7 @@
     border: none;
     border-radius: 4px;
     padding: 10px 20px;
-    margin: 0 5px; /* Razmak između dugmića */
+    margin: 0 0 0 5px; /* Razmak između dugmića */
     cursor: pointer;
     transition: background-color 0.3s ease;
 }

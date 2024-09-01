@@ -8,6 +8,8 @@ import AddExperienceForm from './components/AddExperienceForm.js';
 import ProtectedRoute from './components/ProtectedRoute.js';
 import { AuthProvider } from './contexts/AuthContextProvider.js';
 import UserProfile from './components/UserProfile.js';
+import EditExperienceForm from './components/EditExperienceForm.js';
+import EditUserProfileForm from './components/EditUserProfileForm.js';
 
 function App() {
     return (
@@ -17,13 +19,19 @@ function App() {
                     <Header />
                     <Routes>
                         <Route path="/" element={<Navigate to="/experiences" />} />
-                        <Route path='/experiences' Component={ExperienceList}></Route>
+                        <Route path='/experiences' element={
+    <div className="user-profile">
+      <ExperienceList />
+    </div>
+  }></Route>
                         <Route path='/register' Component={RegistrationForm}></Route>
                         <Route path='/login' Component={LoginForm}></Route>
                         <Route element={<ProtectedRoute />}>
                             <Route path="/add-experience" element={<AddExperienceForm />} />
                         </Route>
                         <Route path="/users/:id" element={<UserProfile />} />
+                        <Route path="/experiences/edit/:id" element={<EditExperienceForm />} />
+                        <Route path="/users/:id/edit" element={<EditUserProfileForm />} /> {/* Ruta za izmenu korisničkih podataka */}
                     </Routes>
                 </Router>
         </div>

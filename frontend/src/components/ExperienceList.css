@@ -4,6 +4,7 @@
     margin: 0;
     background-color: white;
     color: #2E3532;
+    width: 100%; /* Osigurava da zauzima punu širinu */
 }
 
 .experience-item {
@@ -11,6 +12,8 @@
     align-items: stretch;
     padding: 20px;
     border-bottom: 1px solid #ddd;
+    box-sizing: border-box; /* Osigurava da padding ne utiče na ukupnu širinu */
+    width: 100%;
 }
 
 .experience-image-container {
@@ -35,8 +38,38 @@
 .experience-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 2px;
+    align-items: center;
+    width: 100%;
+}
 
+.experience-header-container-username {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.experience-header-container-cost {
+    flex: 0 0 200px;
+    justify-content: center;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.experience-header-container-description {
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.experience-header-container-description strong {
+    padding-right: 40px;
+}
+
+.experience-header-container {
+    flex: 0 0 120px;
+    text-align: right;
 }
 
 .experience-body {
@@ -56,7 +89,7 @@
 
 .experience-title {
     color: #0F09E0;
-    font-size: 2em; /* Povećan font za naslov */
+    font-size: 2em;
     margin: 0 0 10px 0;
 }
 
@@ -68,7 +101,7 @@
 }
 
 .experience-meta {
-    flex: 0 0 200px; /* Povećan kvadrat za cenu */
+    flex: 0 0 200px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -77,7 +110,7 @@
 }
 
 .experience-cost {
-    font-size: 3em; /* Povećan font za cenu */
+    font-size: 3em;
     font-weight: bold;
     margin: 0;
     color: #0F09E0;
@@ -88,26 +121,51 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
+    text-align: justify;
+    word-break: break-word; /* Prelama reči koje su preduge */
+    overflow-wrap: break-word; /* Alternativno za podršku u raznim browserima */
+    white-space: normal; /* Omogućava prelom teksta */
+    max-width: 100%; /* Osigurava da kontejner ne prelazi svoju maksimalnu širinu */
+    padding-right: 30px;
 }
 
 .experience-description {
     margin: 0;
+    padding-right: 30px;
+    text-align: justify;
+    word-break: break-word; /* Prelama reči unutar teksta */
+    overflow-wrap: break-word; /* Osigurava prelom reči u različitim pretraživačima */
+    white-space: normal; /* Omogućava prelom teksta u novi red */
 }
 
 .experience-actions-container {
-    flex: 0 0 200px;
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+    flex: 0 0 120px;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    align-items: stretch;
     gap: 10px;
-    margin-top: 10px;
-    text-align: right;
 }
 
-.like-button, .comment-button {
+.social-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+
+.owner-actions {
+    margin-top: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.edit-button, .delete-button, .like-button, .comment-button {
     display: flex;
     align-items: center;
+    justify-content: center;
     background-color: #09E0DA;
     border: none;
     border-radius: 4px;
@@ -117,11 +175,11 @@
     font-size: 0.9em;
 }
 
-.like-button:hover, .comment-button:hover {
+.edit-button:hover, .delete-button:hover, .like-button:hover, .comment-button:hover {
     background-color: #07BFB8;
 }
 
 .action-icon {
-    margin-right: 5px; /* Razmak između ikone i teksta */
+    margin-right: 5px;
     font-size: 1.2em;
 }

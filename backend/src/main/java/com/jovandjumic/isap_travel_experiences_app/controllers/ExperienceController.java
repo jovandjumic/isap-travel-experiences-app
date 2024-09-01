@@ -81,10 +81,8 @@ public class ExperienceController {
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<String> toggleLike(@PathVariable Long id) {
-        boolean liked = experienceService.toggleLikeExperience(id);
-        String message = liked ? "Experience liked." : "Like removed.";
-        return ResponseEntity.ok(message);
+    public ResponseEntity<Experience> likeExperience(@PathVariable Long id) {
+        Experience updatedExperience = experienceService.likeExperience(id);
+        return ResponseEntity.ok(updatedExperience);
     }
-
 }

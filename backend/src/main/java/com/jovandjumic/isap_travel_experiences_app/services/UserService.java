@@ -57,9 +57,16 @@ public class UserService {
             if (updatedAppUser.getPhoneNumber() != null) {
                 existingAppUser.setPhoneNumber(updatedAppUser.getPhoneNumber());
             }
+            if (updatedAppUser.getProfilePicture() != null) {
+                existingAppUser.setProfilePicture(updatedAppUser.getProfilePicture());
+            }
+            if (updatedAppUser.getBiography() != null) {
+                existingAppUser.setBiography(updatedAppUser.getBiography());
+            }
             return userRepository.save(existingAppUser);
         }).orElse(null);
     }
+
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);

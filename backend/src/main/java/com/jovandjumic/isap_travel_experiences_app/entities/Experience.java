@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Setter
 @Getter
@@ -40,30 +38,23 @@ public class Experience {
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
-    private List<AppUser> likedByUsers = new ArrayList<>();
+    @JoinTable(
+            name= "experience_liked_by_users",
+            joinColumns = @JoinColumn(name = "experience_id"),
+            inverseJoinColumns = @JoinColumn(name = "app_user_id")
+    )
+    List<AppUser> likedByUsers = new ArrayList<>();
 
     @ElementCollection
     private List<String> images = new ArrayList<>();
+
+    private String description;
 
     private Integer inappropriateContentReports = 0;
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = new Date();
-    }
-
-    public boolean toggleLike(AppUser user) {
-        if (likedByUsers.contains(user)) {
-            likedByUsers.remove(user);
-            return false;
-        } else {
-            likedByUsers.add(user);
-            return true;
-        }
-    }
-
-    public int getLikesCount() {
-        return likedByUsers.size();
     }
 
     public void addImage(String imageUrl) {

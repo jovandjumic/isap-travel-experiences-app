@@ -2,14 +2,14 @@
 import React, { useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faSignInAlt, faUserPlus, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faPlus, faSignInAlt, faUserPlus, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import './Header.css';
 import { AuthContext } from '../contexts/AuthContextProvider';
 import api from '../services/api';
 
 const Header = () => {
 
-    const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
+    const {isAuthenticated, setIsAuthenticated, userId, setUserId} = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -25,6 +25,7 @@ const Header = () => {
             
             // Update the authentication state
             setIsAuthenticated(false);
+            setUserId(null);
             
             // Notify the user
             alert('Odjava uspešna!');
@@ -38,6 +39,10 @@ const Header = () => {
         }
     };
 
+    const handleProfileClick = () => {
+        navigate(`/users/${userId}`);
+    };
+
     return (
         <header className="app-header">
             <div className="header-container">
@@ -47,12 +52,12 @@ const Header = () => {
                     </Link>
                 </div>
                 <nav className="nav-links">
-                    {isAuthenticated ? (
-                        <button onClick={handleLogout} className="nav-button">
-                            <FontAwesomeIcon icon={faSignOutAlt} className="button-icon" />
-                            <span>Moj Profil</span>
-                        </button>
-                    ):<></>}
+                    {isAuthenticated && (
+                        <button onClick={handleProfileClick} className="nav-button">
+                        <FontAwesomeIcon icon={faUser} className="button-icon" />
+                        <span>Moj Profil</span>
+                    </button>
+                    )}
                     <Link to="/add-experience" className="nav-button">
                         <FontAwesomeIcon icon={faPlus} className="button-icon" />
                         <span>Dodaj Iskustvo</span>

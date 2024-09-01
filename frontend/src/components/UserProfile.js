@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import ExperienceList from './ExperienceList'; // Ponovno korišćenje liste iskustava
+import ExperienceList from './ExperienceList';
 import './UserProfile.css';
+import { AuthContext } from '../contexts/AuthContextProvider';
 
 const UserProfile = () => {
-    const { id } = useParams(); // Dohvatamo ID iz URL parametara
+    const { id } = useParams();
     const [user, setUser] = useState(null);
+    const { userId: loggedInUserId } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchUserProfile();
@@ -21,6 +24,10 @@ const UserProfile = () => {
         }
     };
 
+    const handleEditProfile = () => {
+        navigate(`/users/${id}/edit`);
+    };
+
     if (!user) {
         return <div>Loading...</div>;
     }
@@ -28,13 +35,31 @@ const UserProfile = () => {
     return (
         <div className="user-profile">
             <div className="user-header">
-                <img src={user.profilePicture || '/path/to/default-avatar.jpg'} alt={`${user.username} avatar`} className="profile-picture" />
-                <div className="user-info">
-                    <h2>{user.firstName} {user.lastName}</h2> {/* Koristimo firstName i lastName umesto name i surname */}
-                    <p>@{user.username}</p>
-                    <p>Registrovan: {user.registrationDate ? new Date(user.registrationDate).toLocaleDateString() : 'Nepoznato'}</p>
-                    <p className="user-bio">{user.biography || 'Korisnik nije dodao biografiju.'}</p>
+                <p className="registration-date">
+                    Registrovan: {user.registrationDate ? new Date(user.registrationDate).toLocaleDateString() : 'Nepoznato'}
+                </p>
+                <div className="user-info-container">
+                    <div className="profile-picture-container">
+                        <img src={user.profilePicture || '/path/to/default-avatar.jpg'} alt={`${user.username} avatar`} className="profile-picture" />
+                    </div>
+                    <div className="user-info-bio-container">
+                        <div className="name-username-container">
+                            <h2>{user.firstName} {user.lastName}</h2>
+                            <h3>@{user.username}</h3>
+                        </div>
+                        <div className="bio-container">
+                            <h4>Biografija:</h4>
+                            <p className="user-bio">{user.biography || 'Korisnik nije dodao biografiju.'}</p>
+                        </div>
+                    </div>
                 </div>
+                {loggedInUserId === user.id && (
+                    <div className="edit-container">
+                        <button className="edit-profile-button" onClick={handleEditProfile}>
+                            Izmeni korisničke podatke
+                        </button>
+                    </div>
+                )}
             </div>
             <h3>Iskustva korisnika {user.username}</h3>
             <ExperienceList currentUser={user} />

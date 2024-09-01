@@ -3,15 +3,15 @@ package com.jovandjumic.isap_travel_experiences_app.controllers;
 import com.jovandjumic.isap_travel_experiences_app.dto.AuthenticationRequest;
 import com.jovandjumic.isap_travel_experiences_app.dto.AuthenticationResponse;
 import com.jovandjumic.isap_travel_experiences_app.dto.RegisterRequest;
+import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
 import com.jovandjumic.isap_travel_experiences_app.services.AuthenticationService;
+import com.jovandjumic.isap_travel_experiences_app.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -21,6 +21,9 @@ import java.io.IOException;
 public class AuthenticationController {
 
     private final AuthenticationService service;
+
+    @Autowired
+    UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
@@ -41,5 +44,11 @@ public class AuthenticationController {
             HttpServletResponse response
     ) throws IOException {
         service.refreshToken(request, response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<AppUser> getCurrentUser() {
+        AppUser currentUser = userService.getCurrentUser();
+        return ResponseEntity.ok(currentUser);
     }
 }

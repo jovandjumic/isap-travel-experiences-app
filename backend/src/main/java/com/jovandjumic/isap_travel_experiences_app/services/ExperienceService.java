@@ -4,18 +4,17 @@ import com.jovandjumic.isap_travel_experiences_app.Specification.ExperienceSpeci
 import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
 import com.jovandjumic.isap_travel_experiences_app.entities.Experience;
 import com.jovandjumic.isap_travel_experiences_app.repositories.ExperienceRepository;
+import com.jovandjumic.isap_travel_experiences_app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ExperienceService {
@@ -25,6 +24,9 @@ public class ExperienceService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public Experience createExperience(Experience experience) {
         experience.setAppUser(userService.getCurrentUser());
@@ -65,6 +67,10 @@ public class ExperienceService {
             if (updatedExperience.getNumberOfPeople() != null) {
                 existingExperience.setNumberOfPeople(updatedExperience.getNumberOfPeople());
             }
+            if (updatedExperience.getDescription() != null) {
+                existingExperience.setDescription(updatedExperience.getDescription());
+            }
+
             return experienceRepository.save(existingExperience);
         }).orElse(null);
     }
@@ -117,13 +123,22 @@ public class ExperienceService {
             specification = specification.and(ExperienceSpecifications.hasLocationType(locationType));
         }
 
-        if (minDays != null && maxDays != null) {
-            specification = specification.and(ExperienceSpecifications.hasDaysSpentBetween(minDays, maxDays));
+        if (minDays != null) {
+            specification = specification.and(ExperienceSpecifications.hasMinDaysSpent(minDays));
         }
 
-        if (minCost != null && maxCost != null) {
-            specification = specification.and(ExperienceSpecifications.hasTotalCostBetween(minCost, maxCost));
+        if (maxDays != null) {
+            specification = specification.and(ExperienceSpecifications.hasMaxDaysSpent(maxDays));
         }
+
+        if (minCost != null) {
+            specification = specification.and(ExperienceSpecifications.hasMinTotalCost(minCost));
+        }
+
+        if (maxCost != null) {
+            specification = specification.and(ExperienceSpecifications.hasMaxTotalCost(maxCost));
+        }
+
         if (minCostPerPerson != null && maxCostPerPerson != null) {
             specification = specification.and(ExperienceSpecifications.hasCostPerPersonBetween(minCostPerPerson, maxCostPerPerson));
         }
@@ -145,15 +160,23 @@ public class ExperienceService {
         experienceRepository.save(experience);
     }
 
-    public boolean toggleLikeExperience(Long experienceId) {
-        Optional<Experience> optionalExperience = experienceRepository.findById(experienceId);
-        if (optionalExperience.isPresent()) {
-            Experience experience = optionalExperience.get();
-            AppUser currentUser = userService.getCurrentUser();
-            boolean liked = experience.toggleLike(currentUser);
-            experienceRepository.save(experience);
-            return liked;
+    public Experience likeExperience(Long experienceId) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        AppUser currentUser = userRepository.findByUsername(currentUsername)
+                .orElseThrow();
+
+        Experience experience = experienceRepository.findById(experienceId)
+                .orElseThrow();
+
+        if (experience.getLikedByUsers().contains(currentUser)) {
+            experience.getLikedByUsers().remove(currentUser);
+            experience.setLikes(experience.getLikes()-1);
+        } else {
+            experience.getLikedByUsers().add(currentUser);
+            experience.setLikes(experience.getLikes()+1);
         }
-        return false;
+
+        return experienceRepository.save(experience);
     }
+
 }

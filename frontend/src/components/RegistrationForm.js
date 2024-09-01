@@ -38,68 +38,69 @@ const RegistrationForm = () => {
     };
 
     return (
-        <div className="registration-form-container">
-            <form onSubmit={handleSubmit} className="registration-form">
-                <h2>Registracija</h2>
-                <div className="form-group">
-                    <label htmlFor="firstname">Ime:</label>
-                    <input 
-                        type="text" 
-                        id="firstname" 
-                        name="firstname" 
-                        value={formData.firstname} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="lastname">Prezime:</label>
-                    <input 
-                        type="text" 
-                        id="lastname" 
-                        name="lastname" 
-                        value={formData.lastname} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="email">Email:</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        value={formData.email} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="username">Korisničko ime:</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        value={formData.username} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Lozinka:</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        value={formData.password} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <button type="submit" className="submit-button">Registruj se</button>
-                <button type="button" className="back-button" onClick={handleBackClick}>Nazad</button>
-            </form>
+        <div className="registration-form-container-register">
+    <form onSubmit={handleSubmit} className="registration-form-register">
+        <h2>Registracija</h2>
+        <div className="form-group-register">
+            <label htmlFor="firstname">Ime:</label>
+            <input 
+                type="text" 
+                id="firstname" 
+                name="firstname" 
+                value={formData.firstname} 
+                onChange={handleChange} 
+                required 
+            />
         </div>
+        <div className="form-group-register">
+            <label htmlFor="lastname">Prezime:</label>
+            <input 
+                type="text" 
+                id="lastname" 
+                name="lastname" 
+                value={formData.lastname} 
+                onChange={handleChange} 
+                required 
+            />
+        </div>
+        <div className="form-group-register">
+            <label htmlFor="email">Email:</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                value={formData.email} 
+                onChange={handleChange} 
+                required 
+            />
+        </div>
+        <div className="form-group-register">
+            <label htmlFor="username">Korisničko ime:</label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                value={formData.username} 
+                onChange={handleChange} 
+                required 
+            />
+        </div>
+        <div className="form-group-register">
+            <label htmlFor="password">Lozinka:</label>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                value={formData.password} 
+                onChange={handleChange} 
+                required 
+            />
+        </div>
+        <button type="submit" className="submit-button-register">Registruj se</button>
+        <button type="button" className="back-button-register" onClick={handleBackClick}>Nazad</button>
+    </form>
+</div>
+
     );
 };
 

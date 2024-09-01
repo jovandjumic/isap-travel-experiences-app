@@ -1,4 +1,4 @@
-.add-experience-form-container {
+.edit-user-profile-form-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,36 +7,22 @@
     color: #2E3532;
 }
 
-.add-experience-form {
+.edit-user-profile-form {
     background-color: #09B5EB;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 800px;
+    max-width: 500px;
 }
 
-.add-experience-form h2 {
+.edit-user-profile-form h2 {
+    margin-bottom: 20px;
     text-align: center;
-}
-
-.add-experience-form h3 {
-    text-align: center;
-}
-
-.form-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
 }
 
 .form-group {
-    flex: 1;
-    margin-right: 15px;
-}
-
-.form-group:last-child {
-    margin-right: 0;
+    margin-bottom: 15px;
 }
 
 .form-group label {
@@ -46,35 +32,22 @@
     color: #fff;
 }
 
-.form-group input,
-.form-group textarea {
+.form-group input, .form-group textarea {
     width: 100%;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
 }
 
 .form-group textarea {
-    height: 200px;
-    overflow-y: scroll;
-    resize: none;
+    resize: vertical;
+    min-height: 100px;
 }
 
-.images-container {
-    flex: 0.3; /* Uži kontejner za slike */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    box-sizing: border-box;
-}
-
-.images-container input {
-    width: 100%;
-    height: 200px;
-}
-
-.submit-button {
+.submit-button, .back-button {
     width: 100%;
     padding: 12px;
     background-color: #1474D4;
@@ -84,9 +57,22 @@
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s ease;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
-.submit-button:hover {
+.change-password-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1474D4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.submit-button:hover, .back-button:hover, .change-password-button:hover {
     background-color: #105BB3;
 }

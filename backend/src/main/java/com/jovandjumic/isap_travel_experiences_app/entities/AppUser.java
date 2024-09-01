@@ -10,6 +10,7 @@ import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 public class AppUser implements UserDetails {
 
     @Id
@@ -47,6 +49,10 @@ public class AppUser implements UserDetails {
     @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Token> tokens;
+
+    @ManyToMany(mappedBy = "likedByUsers")
+    @JsonIgnore
+    List<Experience> likedExperiences= new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

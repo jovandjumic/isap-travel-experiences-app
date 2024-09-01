@@ -10,7 +10,7 @@ const LoginForm = () => {
         password: ''
     });
 
-    const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
+    const {setIsAuthenticated, userId, setUserId} = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -30,6 +30,19 @@ const LoginForm = () => {
             localStorage.setItem('accessToken', access_token);
             localStorage.setItem('refreshToken', refresh_token);
             setIsAuthenticated(true);
+            try {
+                const token = localStorage.getItem('accessToken');
+                console.log('Token from localStorage:', token);  // Log token from localStorage
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+                const userResponse = await api.get('auth/me', config);
+                setUserId(userResponse.data.id);
+                console.log('User ID:', userResponse.data.id); // Log the user ID
+            } catch (error) {
+                console.error('Failed to fetch current user:', error);
+                alert('Failed to fetch current user');
+            }
             alert('Prijava uspešna!');
             const redirectTo = location.state?.from?.pathname || '/experiences';
             navigate(redirectTo, { replace: true });
@@ -45,35 +58,36 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="login-form-container">
-            <form onSubmit={handleSubmit} className="login-form">
-                <h2>Prijava</h2>
-                <div className="form-group">
-                    <label htmlFor="username">Korisničko ime:</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        value={formData.username} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Lozinka:</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        value={formData.password} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <button type="submit" className="submit-button">Prijavi se</button>
-                <button type="button" className="back-button" onClick={handleBackClick}>Nazad</button>
-            </form>
+        <div className="login-form-container-login">
+    <form onSubmit={handleSubmit} className="login-form-login">
+        <h2>Prijava</h2>
+        <div className="form-group-login">
+            <label htmlFor="username">Korisničko ime:</label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                value={formData.username} 
+                onChange={handleChange} 
+                required 
+            />
         </div>
+        <div className="form-group-login">
+            <label htmlFor="password">Lozinka:</label>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                value={formData.password} 
+                onChange={handleChange} 
+                required 
+            />
+        </div>
+        <button type="submit" className="submit-button-login">Prijavi se</button>
+        <button type="button" className="back-button-login" onClick={handleBackClick}>Nazad</button>
+    </form>
+</div>
+
     );
 };
 

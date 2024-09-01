@@ -1,49 +1,115 @@
 .user-profile {
     width: 100%;
-    max-width: 1500px; /* Povećan max-width */
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 30px; /* Povećan padding za bolji raspored */
+    padding: 30px;
     background-color: #f9f9f9;
     border-radius: 8px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15); /* Povećana senka */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
 }
 
 .user-header {
     display: flex;
-    align-items: center;
-    margin-bottom: 30px; /* Povećana margina ispod headera */
+    flex-direction: column;
     background-color: #09B5EB;
-    padding: 30px; /* Povećan padding unutar headera */
+    padding: 30px;
     border-radius: 8px;
+    min-height: 120px;
+    position: relative;
+}
+
+.registration-date {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    font-size: 1em;
+    color: #2E3532;
+}
+
+.user-info-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px; /* Dodatni razmak između datuma i slike */
+}
+
+.profile-picture-container {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 .profile-picture {
-    width: 120px; /* Povećana veličina slike profila */
-    height: 120px; /* Povećana visina slike profila */
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    margin-right: 30px; /* Povećana margina desno */
     object-fit: cover;
 }
 
-.user-info {
-    color: #fff;
+.user-info-bio-container {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    color: #2E3532;
+    flex: 1;
 }
 
-.user-info h2 {
+.name-username-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+}
+
+.name-username-container h2 {
     margin: 0;
-    font-size: 1.8em; /* Povećana veličina fonta za ime */
+    font-size: 1.8em;
 }
 
-.user-info p {
-    margin: 8px 0; /* Povećana margina između paragrafa */
+.name-username-container h3 {
+    margin: 0;
+}
+
+.bio-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px;
+    flex: 1;
+    margin-left: 10%;
+}
+
+.bio-container h4 {
+    margin: 0;
+    font-size: 1.2em;
 }
 
 .user-bio {
     font-style: italic;
-    margin-top: 15px; /* Povećana margina iznad biografije */
+    margin: 0;
 }
 
-h3 {
-    margin-top: 50px; /* Povećana margina iznad naslova */
-    color: #2E3532;
+.edit-container {
+    width: 100%;
+    margin-top: 20px; /* Dodatni razmak između glavnog sadržaja i dugmeta */
+}
+
+.edit-profile-button {
+    background-color: #1474D4;
+    font-size: 1em;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Dugme zauzima punu širinu */
+    text-align: center;
+    margin-top: 10px;
+}
+
+.edit-profile-button:hover {
+    background-color: #105BB3;
 }

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import './AddExperienceForm.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const AddExperienceForm = () => {
+const EditExperienceForm = () => {
     const navigate = useNavigate();
+    const { id } = useParams(); // Preuzimanje ID-a iz URL-a
     const [formData, setFormData] = useState({
         destination: {
             locationName: '',
@@ -26,6 +27,43 @@ const AddExperienceForm = () => {
         images: [],
         description: ''
     });
+
+    useEffect(() => {
+        // Učitavanje podataka o iskustvu po ID-u
+        const fetchExperience = async () => {
+            try {
+                const response = await api.get(`/experiences/${id}`);
+                
+                // Postavljanje samo relevantnih podataka u formData
+                const experienceData = {
+                    destination: {
+                        locationName: response.data.destination?.locationName || '',
+                        regionArea: response.data.destination?.regionArea || '',
+                        country: {
+                            countryName: response.data.destination?.country?.countryName || '',
+                        },
+                        locationType: response.data.destination?.locationType || ''
+                    },
+                    daysSpent: response.data.daysSpent || '',
+                    costs: {
+                        travelCost: response.data.costs?.travelCost || '',
+                        travelMode: response.data.costs?.travelMode || '',
+                        travelRoute: response.data.costs?.travelRoute || '',
+                        accommodationCost: response.data.costs?.accommodationCost || '',
+                        otherCosts: response.data.costs?.otherCosts || ''
+                    },
+                    numberOfPeople: response.data.numberOfPeople || '',
+                    images: response.data.images || []
+                };
+                
+                setFormData(experienceData);
+            } catch (error) {
+                console.error('Failed to fetch experience:', error);
+            }
+        };
+
+        fetchExperience();
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -66,19 +104,19 @@ const AddExperienceForm = () => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            const response = await api.post('/experiences', formData, config);
-            alert('Iskustvo uspešno dodato!');
-            // Redirect to the experiences list or another page
+            await api.put(`experiences/${id}`, formData, config);
+            alert('Iskustvo uspešno izmenjeno!');
+            navigate('/experiences'); // Preusmeravanje na listu iskustava
         } catch (error) {
-            console.error('Greška prilikom dodavanja iskustva:', error);
-            alert('Dodavanje iskustva nije uspelo. Molimo pokušajte ponovo.');
+            console.error('Greška prilikom izmene iskustva:', error);
+            alert('Izmena iskustva nije uspela. Molimo pokušajte ponovo.');
         }
     };
 
     return (
         <div className="add-experience-form-container">
             <form onSubmit={handleSubmit} className="add-experience-form">
-                <h2>Dodaj novo iskustvo</h2>
+                <h2>Izmeni iskustvo</h2>
 
                 <div className="form-row">
                     <div className="form-group">
@@ -198,8 +236,8 @@ const AddExperienceForm = () => {
                     <div className="form-group">
                         <label>Opis putovanja:</label>
                         <textarea 
-                            name="description"
-                            value={formData.description}
+                            name="description" 
+                            value={formData.description} 
                             onChange={handleChange} 
                         />
                     </div>
@@ -215,11 +253,11 @@ const AddExperienceForm = () => {
                     </div>
                 </div>
 
-                <button type="submit" className="submit-button">Dodaj Iskustvo</button>
+                <button type="submit" className="submit-button">Izmeni Iskustvo</button>
                 <button type="button" className="back-button" onClick={handleBackClick}>Nazad</button>
             </form>
         </div>
     );
 };
 
-export default AddExperienceForm;
+export default EditExperienceForm;
