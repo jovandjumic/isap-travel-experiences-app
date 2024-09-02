@@ -52,10 +52,7 @@ public class Experience {
 
     private Integer inappropriateContentReports = 0;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Date();
-    }
+    private Double costPerPerson;
 
     public void addImage(String imageUrl) {
         images.add(imageUrl);
@@ -65,12 +62,18 @@ public class Experience {
         images.remove(imageUrl);
     }
 
-    @Transient
-    public Double getCostPerPerson() {
-        if (this.costs == null || this.costs.getTotalCost() == null || this.numberOfPeople == null || this.numberOfPeople == 0) {
-            return null;
+    public void calculateCostPerPerson() {
+        this.costPerPerson = ((this.costs.getTravelCost() != null ? this.costs.getTravelCost() : 0.0) +
+                (this.costs.getAccommodationCost() != null ? this.costs.getAccommodationCost() : 0.0) +
+                (this.costs.getOtherCosts() != null ? this.costs.getOtherCosts() : 0.0)) / this.numberOfPeople;
+    }
+
+    @PrePersist
+    @PreUpdate
+    protected void onCreateOrUpdate() {
+        if (this.createdAt == null) {
+            this.createdAt = new Date();
         }
-        return this.costs.getTotalCost() / this.numberOfPeople;
     }
 
 }

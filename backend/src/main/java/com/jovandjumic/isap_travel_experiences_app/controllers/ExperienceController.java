@@ -2,22 +2,26 @@ package com.jovandjumic.isap_travel_experiences_app.controllers;
 
 import com.jovandjumic.isap_travel_experiences_app.entities.Experience;
 import com.jovandjumic.isap_travel_experiences_app.services.ExperienceService;
+import com.jovandjumic.isap_travel_experiences_app.services.ImageStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/experiences")
 public class ExperienceController {
 
     @Autowired
     private ExperienceService experienceService;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
 
     @PostMapping
     public ResponseEntity<Experience> createExperience(@RequestBody Experience experience) {
@@ -51,15 +55,29 @@ public class ExperienceController {
     }
 
     @PostMapping("/{id}/images")
-    public ResponseEntity<String> addImageToExperience(@PathVariable Long id, @RequestBody String imageUrl) {
-        experienceService.addImageToExperience(id, imageUrl);
-        return ResponseEntity.ok("Image added successfully.");
+    public ResponseEntity<String> addImageToExperience(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = imageStorageService.uploadImage(file, file.getOriginalFilename());
+
+            experienceService.addImageToExperience(id, imageUrl);
+
+            return ResponseEntity.ok("Image added successfully: " + imageUrl);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to upload image: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}/images")
     public ResponseEntity<String> removeImageFromExperience(@PathVariable Long id, @RequestBody String imageUrl) {
-        experienceService.removeImageFromExperience(id, imageUrl);
-        return ResponseEntity.ok("Image removed successfully.");
+        try {
+            experienceService.removeImageFromExperience(id, imageUrl);
+
+            imageStorageService.deleteImage(imageUrl);
+
+            return ResponseEntity.ok("Image removed successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to remove image: " + e.getMessage());
+        }
     }
 
     @GetMapping("/search")

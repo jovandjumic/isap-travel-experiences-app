@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Filters.css';
 
 const Filters = ({ onFilterChange }) => {
@@ -18,7 +18,14 @@ const Filters = ({ onFilterChange }) => {
     });
     const [sortField, setSortField] = useState('createdAt');
     const [sortOrder, setSortOrder] = useState('desc');
-    const [pageSize, setPageSize] = useState(10); // Dodato za broj iskustava po strani
+    const [pageSize, setPageSize] = useState(10);
+
+    useEffect(() => {
+        // Kada se priceType promeni, ažuriraj sortField ako je trenutni sortField 'cost'
+        if (sortField === 'costs.totalCost' || sortField === 'costPerPerson') {
+            setSortField(priceType === 'total' ? 'costs.totalCost' : 'costPerPerson');
+        }
+    }, [priceType]);
 
     const handleApplyFilter = () => {
         const filters = {
@@ -29,8 +36,8 @@ const Filters = ({ onFilterChange }) => {
             'country': destination.country.countryName,
             'continent': destination.country.continent,
             'locationType': destination.locationType,
-            sort: `${sortField},${sortOrder}`, // Format sort=field,order
-            size: pageSize // Dodato za broj iskustava po strani
+            sort: `${sortField},${sortOrder}`,
+            size: pageSize
         };
 
         if (priceType === 'total') {
@@ -59,6 +66,15 @@ const Filters = ({ onFilterChange }) => {
                 [key]: value
             }
         }));
+    };
+
+    const handleSortFieldChange = (e) => {
+        const selectedValue = e.target.value;
+        if (selectedValue === 'cost') {
+            setSortField(priceType === 'total' ? 'costs.totalCost' : 'costPerPerson');
+        } else {
+            setSortField(selectedValue);
+        }
     };
 
     return (
@@ -144,8 +160,8 @@ const Filters = ({ onFilterChange }) => {
             </div>
             <div className="filters-row">
                 <label>Sortiraj po:</label>
-                <select value={sortField} onChange={(e) => setSortField(e.target.value)}>
-                    <option value="costs">Cena</option>
+                <select value={sortField} onChange={handleSortFieldChange}>
+                    <option value="cost">Cena</option>
                     <option value="createdAt">Datum objave</option>
                     <option value="daysSpent">Broj dana</option>
                 </select>

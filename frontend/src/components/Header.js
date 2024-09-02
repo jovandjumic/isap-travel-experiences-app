@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faPlus, faSignInAlt, faUserPlus, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import './Header.css';
 import { AuthContext } from '../contexts/AuthContextProvider';
+import logo from '../assets/images/logo.png';
 import api from '../services/api';
 
 const Header = () => {
@@ -48,7 +49,7 @@ const Header = () => {
             <div className="header-container">
                 <div className="logo">
                     <Link to="/">
-                        <img src="/logo.png" alt="Site Logo" className="logo-image" />
+                        <img src={logo} alt="Site Logo" className="logo-image" />
                     </Link>
                 </div>
                 <nav className="nav-links">

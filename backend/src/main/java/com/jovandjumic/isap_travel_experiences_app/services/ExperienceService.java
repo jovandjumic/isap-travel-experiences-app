@@ -5,14 +5,14 @@ import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
 import com.jovandjumic.isap_travel_experiences_app.entities.Experience;
 import com.jovandjumic.isap_travel_experiences_app.repositories.ExperienceRepository;
 import com.jovandjumic.isap_travel_experiences_app.repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -32,6 +32,7 @@ public class ExperienceService {
         experience.setAppUser(userService.getCurrentUser());
         experience.setCreatedAt(new Date());
         experience.setComments(new ArrayList<>());
+        experience.calculateCostPerPerson();
         return experienceRepository.save(experience);
     }
 
@@ -70,7 +71,7 @@ public class ExperienceService {
             if (updatedExperience.getDescription() != null) {
                 existingExperience.setDescription(updatedExperience.getDescription());
             }
-
+            existingExperience.calculateCostPerPerson();
             return experienceRepository.save(existingExperience);
         }).orElse(null);
     }
@@ -79,7 +80,6 @@ public class ExperienceService {
         Experience existingExperience = experienceRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Experience not found"));
 
-        // Provera vlasništva nad Experience entitetom
         if (!existingExperience.getAppUser().getUsername().equals(userService.getCurrentUser().getUsername())) {
             throw new AccessDeniedException("You do not have permission to delete this experience");
         }
@@ -139,8 +139,12 @@ public class ExperienceService {
             specification = specification.and(ExperienceSpecifications.hasMaxTotalCost(maxCost));
         }
 
-        if (minCostPerPerson != null && maxCostPerPerson != null) {
-            specification = specification.and(ExperienceSpecifications.hasCostPerPersonBetween(minCostPerPerson, maxCostPerPerson));
+        if (minCostPerPerson != null) {
+            specification = specification.and(ExperienceSpecifications.hasMinCostPerPerson(minCostPerPerson));
+        }
+
+        if (maxCostPerPerson != null) {
+            specification = specification.and(ExperienceSpecifications.hasMaxCostPerPerson(maxCostPerPerson));
         }
 
         return experienceRepository.findAll(specification, pageable);

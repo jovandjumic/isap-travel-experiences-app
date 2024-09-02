@@ -41,6 +41,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .requestMatchers(GET,"/api/experiences/**").permitAll()
                                 .requestMatchers(GET,"/api/users/**").permitAll()
+                                .requestMatchers("/uploads/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

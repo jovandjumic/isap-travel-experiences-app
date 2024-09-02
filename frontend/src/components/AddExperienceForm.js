@@ -27,6 +27,9 @@ const AddExperienceForm = () => {
         description: ''
     });
 
+    // Stanja za čuvanje privremenih slika koje treba da se uploaduju nakon submita
+    const [pendingUploads, setPendingUploads] = useState([]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         const keys = name.split('.');
@@ -48,11 +51,15 @@ const AddExperienceForm = () => {
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        const imageUrls = files.map(file => URL.createObjectURL(file));
+        const newImageUrls = files.map(file => URL.createObjectURL(file));
+
         setFormData((prevState) => ({
             ...prevState,
-            images: [...prevState.images, ...imageUrls],
+            images: [...prevState.images, ...newImageUrls],
         }));
+
+        // Čuvanje file-ova za upload nakon submita
+        setPendingUploads((prev) => [...prev, ...files]);
     };
 
     const handleBackClick = () => {
@@ -61,14 +68,41 @@ const AddExperienceForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('accessToken');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
         try {
-            const token = localStorage.getItem('accessToken');
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
+            // Prvo kreirajte iskustvo bez slika
             const response = await api.post('/experiences', formData, config);
+            const experienceId = response.data.id; // Pretpostavljamo da se vraća ID kreiranog iskustva
+
+            // Zatim upload-ujte nove slike
+            const uploadedImageUrls = await Promise.all(pendingUploads.map(async (file) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                const uploadConfig = {
+                    headers: { 
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                const uploadResponse = await api.post(`/experiences/${experienceId}/images`, formData, uploadConfig);
+                return uploadResponse.data.split(": ")[1]; // Dobijamo samo URL
+            }));
+
+            // Ažurirajte experience sa slikama
+            setFormData((prevState) => ({
+                ...prevState,
+                images: [...prevState.images, ...uploadedImageUrls],
+            }));
+
             alert('Iskustvo uspešno dodato!');
-            // Redirect to the experiences list or another page
+            navigate('/experiences'); // Preusmeravanje na listu iskustava
+
+            // Reset stanja nakon uspešnog submita
+            setPendingUploads([]);
         } catch (error) {
             console.error('Greška prilikom dodavanja iskustva:', error);
             alert('Dodavanje iskustva nije uspelo. Molimo pokušajte ponovo.');
@@ -198,19 +232,24 @@ const AddExperienceForm = () => {
                     <div className="form-group">
                         <label>Opis putovanja:</label>
                         <textarea 
-                            name="description"
-                            value={formData.description}
+                            name="description" 
+                            value={formData.description} 
                             onChange={handleChange} 
                         />
                     </div>
                     <div className="images-container">
+                        {formData.images.map((imageUrl, index) => (
+                            <div key={index} className="image-preview">
+                                <img src={imageUrl} alt={`Experience ${index}`} />
+                            </div>
+                        ))}
                         <div className="form-group">
-                        <label>Fotografije:</label>
-                        <input 
-                            type="file" 
-                            multiple 
-                            onChange={handleImageChange} 
-                        />
+                            <label>Fotografije:</label>
+                            <input 
+                                type="file" 
+                                multiple 
+                                onChange={handleImageChange} 
+                            />
                         </div>
                     </div>
                 </div>

@@ -112,11 +112,14 @@ const ExperienceList = ({ currentUser }) => {
                     {experiences.map(experience => (
                         <li key={experience.id} className="experience-item">
                             <div className="experience-image-container">
-                                <img 
-                                    src={experience.images?.[0] || '/path/to/default-image.jpg'} 
-                                    alt="Experience" 
-                                    className="experience-image" 
-                                />
+                            <img 
+   src={experience.images?.[0] 
+    ? `http://localhost:8080/uploads/${experience.images[0].split('\\').pop()}` 
+    : '/path/to/default-image.jpg'}
+    alt="Experience" 
+    className="experience-image"
+/>
+
                             </div>
                             <div className="experience-main-content">
                             <div className="experience-header">

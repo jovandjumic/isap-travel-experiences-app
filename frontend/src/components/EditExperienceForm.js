@@ -28,6 +28,10 @@ const EditExperienceForm = () => {
         description: ''
     });
 
+    // Stanja za čuvanje privremenih slika koje treba da se uploaduju ili obrišu nakon submita
+    const [pendingUploads, setPendingUploads] = useState([]);
+    const [pendingRemovals, setPendingRemovals] = useState([]);
+
     useEffect(() => {
         // Učitavanje podataka o iskustvu po ID-u
         const fetchExperience = async () => {
@@ -53,7 +57,8 @@ const EditExperienceForm = () => {
                         otherCosts: response.data.costs?.otherCosts || ''
                     },
                     numberOfPeople: response.data.numberOfPeople || '',
-                    images: response.data.images || []
+                    images: response.data.images || [],
+                    description: response.data.description || ''
                 };
                 
                 setFormData(experienceData);
@@ -86,11 +91,28 @@ const EditExperienceForm = () => {
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        const imageUrls = files.map(file => URL.createObjectURL(file));
+        const newImageUrls = files.map(file => URL.createObjectURL(file));
+
         setFormData((prevState) => ({
             ...prevState,
-            images: [...prevState.images, ...imageUrls],
+            images: [...prevState.images, ...newImageUrls],
         }));
+        
+        // Čuvanje file-ova za upload nakon submita
+        setPendingUploads((prev) => [...prev, ...files]);
+    };
+
+    const handleImageRemove = (index) => {
+        const removedImageUrl = formData.images[index];
+
+        setFormData((prevState) => {
+            const newImages = [...prevState.images];
+            newImages.splice(index, 1);
+            return { ...prevState, images: newImages };
+        });
+
+        // Čuvanje URL-a slike za brisanje nakon submita
+        setPendingRemovals((prev) => [...prev, removedImageUrl]);
     };
 
     const handleBackClick = () => {
@@ -99,14 +121,47 @@ const EditExperienceForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const experienceId = id;
+        const token = localStorage.getItem('accessToken');
+
         try {
-            const token = localStorage.getItem('accessToken');
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            await api.put(`experiences/${id}`, formData, config);
+
+            // Prvo obrišite slike koje treba obrisati
+            await Promise.all(pendingRemovals.map(async (imageUrl) => {
+                await api.delete(`/experiences/${experienceId}/images`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'text/plain'
+                    },
+                    data: imageUrl,
+                });
+            }));
+
+            // Zatim upload-ujte nove slike
+            const uploadedImageUrls = await Promise.all(pendingUploads.map(async (file) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                const response = await api.post(`/experiences/${experienceId}/images`, formData, config);
+                return response.data.split(": ")[1]; // Dobijamo samo URL
+            }));
+
+            // Dodajte nove slike u formData
+            setFormData((prevState) => ({
+                ...prevState,
+                images: [...prevState.images, ...uploadedImageUrls],
+            }));
+
+            // Nakon toga ažurirajte Experience sa svim ostalim podacima
+            await api.put(`/experiences/${id}`, formData, config);
             alert('Iskustvo uspešno izmenjeno!');
-            navigate('/experiences'); // Preusmeravanje na listu iskustava
+            navigate('/experiences');
+
+            // Reset stanja nakon uspešnog submita
+            setPendingUploads([]);
+            setPendingRemovals([]);
         } catch (error) {
             console.error('Greška prilikom izmene iskustva:', error);
             alert('Izmena iskustva nije uspela. Molimo pokušajte ponovo.');
@@ -242,13 +297,21 @@ const EditExperienceForm = () => {
                         />
                     </div>
                     <div className="images-container">
+                        {formData.images.map((imageUrl, index) => (
+                            <div key={index} className="image-preview">
+                                <img src={imageUrl} alt={`Experience ${index}`} />
+                                <button type="button" onClick={() => handleImageRemove(index)}>
+                                    Ukloni
+                                </button>
+                            </div>
+                        ))}
                         <div className="form-group">
-                        <label>Fotografije:</label>
-                        <input 
-                            type="file" 
-                            multiple 
-                            onChange={handleImageChange} 
-                        />
+                            <label>Fotografije:</label>
+                            <input 
+                                type="file" 
+                                multiple 
+                                onChange={handleImageChange} 
+                            />
                         </div>
                     </div>
                 </div>

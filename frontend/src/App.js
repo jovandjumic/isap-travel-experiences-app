@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/AuthContextProvider.js';
 import UserProfile from './components/UserProfile.js';
 import EditExperienceForm from './components/EditExperienceForm.js';
 import EditUserProfileForm from './components/EditUserProfileForm.js';
+import ChangePasswordForm from './components/ChangePasswordForm.js';
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/users/:id" element={<UserProfile />} />
                         <Route path="/experiences/edit/:id" element={<EditExperienceForm />} />
                         <Route path="/users/:id/edit" element={<EditUserProfileForm />} /> {/* Ruta za izmenu korisničkih podataka */}
+                        <Route path="/change-password" element={<ChangePasswordForm />} />
                     </Routes>
                 </Router>
         </div>

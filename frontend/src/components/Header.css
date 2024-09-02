@@ -1,7 +1,7 @@
 .app-header {
     background-color: #1474D4;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     border-bottom: none;
     border-radius: 5px;
@@ -12,12 +12,13 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 20px 0 20px 40px;
-    margin: 0 auto;
+    padding: 20px 40px 20px 40px;
+    max-width: 1500px;
 }
 
 .logo-image {
-    height: 40px;
+    padding-left: 3%;
+    width: 25%;
 }
 
 .nav-links {
@@ -44,6 +45,7 @@
     font-size: 1em;
     width: 10vw;
     transition: background-color 0.3s ease;
+    max-width: 150px;
 }
 
 .button-icon {
