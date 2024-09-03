@@ -27,8 +27,9 @@ const AddExperienceForm = () => {
         description: ''
     });
 
-    // Stanja za čuvanje privremenih slika koje treba da se uploaduju nakon submita
+    // Stanja za čuvanje privremenih slika koje treba da se uploaduju ili obrišu nakon submita
     const [pendingUploads, setPendingUploads] = useState([]);
+    const [pendingRemovals, setPendingRemovals] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -57,9 +58,22 @@ const AddExperienceForm = () => {
             ...prevState,
             images: [...prevState.images, ...newImageUrls],
         }));
-
+        
         // Čuvanje file-ova za upload nakon submita
         setPendingUploads((prev) => [...prev, ...files]);
+    };
+
+    const handleImageRemove = (index) => {
+        const removedImageUrl = formData.images[index];
+
+        setFormData((prevState) => {
+            const newImages = [...prevState.images];
+            newImages.splice(index, 1);
+            return { ...prevState, images: newImages };
+        });
+
+        // Čuvanje URL-a slike za brisanje nakon submita
+        setPendingRemovals((prev) => [...prev, removedImageUrl]);
     };
 
     const handleBackClick = () => {
@@ -69,45 +83,48 @@ const AddExperienceForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('accessToken');
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-
+    
         try {
-            // Prvo kreirajte iskustvo bez slika
-            const response = await api.post('/experiences', formData, config);
-            const experienceId = response.data.id; // Pretpostavljamo da se vraća ID kreiranog iskustva
-
-            // Zatim upload-ujte nove slike
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+    
+            // Kreiranje novog iskustva bez slika
+            const response = await api.post('/experiences',formData, config);
+            const experienceId = response.data.id;
+    
+            // Uploadovanje novih slika
             const uploadedImageUrls = await Promise.all(pendingUploads.map(async (file) => {
-                const formData = new FormData();
-                formData.append('file', file);
+                const imageFormData = new FormData();
+                imageFormData.append('file', file);
                 const uploadConfig = {
                     headers: { 
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'text/plain'
                     }
                 };
-                const uploadResponse = await api.post(`/experiences/${experienceId}/images`, formData, uploadConfig);
+                const uploadResponse = await api.post(`/experiences/${experienceId}/images`, imageFormData, uploadConfig);
                 return uploadResponse.data.split(": ")[1]; // Dobijamo samo URL
             }));
-
-            // Ažurirajte experience sa slikama
+    
+            // Zamenite blob URL-ove sa stvarnim URL-ovima sa servera
             setFormData((prevState) => ({
                 ...prevState,
-                images: [...prevState.images, ...uploadedImageUrls],
+                images: [...uploadedImageUrls],
             }));
-
+    
             alert('Iskustvo uspešno dodato!');
             navigate('/experiences'); // Preusmeravanje na listu iskustava
-
+    
             // Reset stanja nakon uspešnog submita
             setPendingUploads([]);
+            setPendingRemovals([]);
         } catch (error) {
             console.error('Greška prilikom dodavanja iskustva:', error);
             alert('Dodavanje iskustva nije uspelo. Molimo pokušajte ponovo.');
         }
     };
+    
 
     return (
         <div className="add-experience-form-container">
@@ -196,38 +213,8 @@ const AddExperienceForm = () => {
                     </div>
                 </div>
 
-                <h3>Troškovi:</h3>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Troškovi putovanja:</label>
-                        <input 
-                            type="number" 
-                            name="costs.travelCost" 
-                            value={formData.costs.travelCost} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Troškovi smeštaja:</label>
-                        <input 
-                            type="number" 
-                            name="costs.accommodationCost" 
-                            value={formData.costs.accommodationCost} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Ostali troškovi:</label>
-                        <input 
-                            type="number" 
-                            name="costs.otherCosts" 
-                            value={formData.costs.otherCosts} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                </div>
+                <h3 className="section-header">Opis putovanja i fotografije</h3>
                 
-                <h3>Opis putavnja i fotografije:</h3>
                 <div className="form-row">
                     <div className="form-group">
                         <label>Opis putovanja:</label>
@@ -237,22 +224,35 @@ const AddExperienceForm = () => {
                             onChange={handleChange} 
                         />
                     </div>
-                    <div className="images-container">
-                        {formData.images.map((imageUrl, index) => (
-                            <div key={index} className="image-preview">
-                                <img src={imageUrl} alt={`Experience ${index}`} />
-                            </div>
-                        ))}
-                        <div className="form-group">
-                            <label>Fotografije:</label>
-                            <input 
-                                type="file" 
-                                multiple 
-                                onChange={handleImageChange} 
-                            />
-                        </div>
-                    </div>
                 </div>
+
+                <div className="form-row">
+                    <div className="form-group">
+                        <label>Fotografije:</label>
+                            <div className="images-container">
+                                <div className="file-input-wrapper">
+                                    <input 
+                                        type="file" 
+                                        multiple 
+                                        onChange={handleImageChange} 
+                                        className="image-input"
+                                    />
+                                </div>
+                                {formData.images.length > 0 && (
+                                    <div className="images-list-container">
+                                        {formData.images.map((imageUrl, index) => (
+                                            <div key={index} className="image-preview-item">
+                                                <img src={imageUrl} alt={`Experience ${index}`} className="image-preview-thumbnail" />
+                                                <button type="button" className="remove-image-button" onClick={() => handleImageRemove(index)}>
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            </div>
+                </div> 
 
                 <button type="submit" className="submit-button">Dodaj Iskustvo</button>
                 <button type="button" className="back-button" onClick={handleBackClick}>Nazad</button>

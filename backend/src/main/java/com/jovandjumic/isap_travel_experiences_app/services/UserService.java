@@ -1,6 +1,7 @@
 package com.jovandjumic.isap_travel_experiences_app.services;
 
 import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
+import com.jovandjumic.isap_travel_experiences_app.entities.Experience;
 import com.jovandjumic.isap_travel_experiences_app.repositories.UserRepository;
 import com.jovandjumic.isap_travel_experiences_app.dto.ChangePasswordRequest;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,23 @@ public class UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
+
+    public void uploadProfilePicture(Long id, String imageUrl) throws Exception {
+        AppUser appUser = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        appUser.setProfilePicture(imageUrl);
+        userRepository.save(appUser);
+    }
+
+    public void removeProfilePicture(Long id) throws Exception {
+        AppUser appUser = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        appUser.setProfilePicture(null);
+        userRepository.save(appUser);
+    }
 
     public AppUser createUser(AppUser appUser) {
         return userRepository.save(appUser);

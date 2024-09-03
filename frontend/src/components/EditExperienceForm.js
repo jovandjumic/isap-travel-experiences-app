@@ -170,156 +170,137 @@ const EditExperienceForm = () => {
 
     return (
         <div className="add-experience-form-container">
-            <form onSubmit={handleSubmit} className="add-experience-form">
-                <h2>Izmeni iskustvo</h2>
+    <form onSubmit={handleSubmit} className="add-experience-form">
+        <h2>Izmeni iskustvo</h2>
 
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Broj dana:</label>
-                        <input 
-                            type="number" 
-                            name="daysSpent" 
-                            value={formData.daysSpent} 
-                            onChange={handleChange} 
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Broj osoba:</label>
-                        <input 
-                            type="number" 
-                            name="numberOfPeople" 
-                            value={formData.numberOfPeople} 
-                            onChange={handleChange} 
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Način putovanja:</label>
-                        <input 
-                            type="text" 
-                            name="costs.travelMode" 
-                            value={formData.costs.travelMode} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Putna ruta:</label>
-                        <input 
-                            type="text" 
-                            name="costs.travelRoute" 
-                            value={formData.costs.travelRoute} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                </div>
+        <div className="form-row">
+            <div className="form-group">
+                <label>Broj dana:</label>
+                <input 
+                    type="number" 
+                    name="daysSpent" 
+                    value={formData.daysSpent} 
+                    onChange={handleChange} 
+                    required
+                />
+            </div>
+            <div className="form-group">
+                <label>Broj osoba:</label>
+                <input 
+                    type="number" 
+                    name="numberOfPeople" 
+                    value={formData.numberOfPeople} 
+                    onChange={handleChange} 
+                    required
+                />
+            </div>
+            <div className="form-group">
+                <label>Način putovanja:</label>
+                <input 
+                    type="text" 
+                    name="costs.travelMode" 
+                    value={formData.costs.travelMode} 
+                    onChange={handleChange} 
+                />
+            </div>
+            <div className="form-group">
+                <label>Putna ruta:</label>
+                <input 
+                    type="text" 
+                    name="costs.travelRoute" 
+                    value={formData.costs.travelRoute} 
+                    onChange={handleChange} 
+                />
+            </div>
+        </div>
 
-                <h3>Destinacija:</h3>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Naziv destinacije:</label>
-                        <input 
-                            type="text" 
-                            name="destination.locationName" 
-                            value={formData.destination.locationName} 
-                            onChange={handleChange} 
-                            required 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Oblast/Regija:</label>
-                        <input 
-                            type="text" 
-                            name="destination.regionArea" 
-                            value={formData.destination.regionArea} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Država:</label>
-                        <input 
-                            type="text" 
-                            name="destination.country.countryName" 
-                            value={formData.destination.country.countryName} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Tip destinacije:</label>
-                        <input 
-                            type="text" 
-                            name="destination.locationType" 
-                            value={formData.destination.locationType} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                </div>
+        <h3>Destinacija:</h3>
+        <div className="form-row">
+            <div className="form-group">
+                <label>Naziv destinacije:</label>
+                <input 
+                    type="text" 
+                    name="destination.locationName" 
+                    value={formData.destination.locationName} 
+                    onChange={handleChange} 
+                    required 
+                />
+            </div>
+            <div className="form-group">
+                <label>Oblast/Regija:</label>
+                <input 
+                    type="text" 
+                    name="destination.regionArea" 
+                    value={formData.destination.regionArea} 
+                    onChange={handleChange} 
+                />
+            </div>
+            <div className="form-group">
+                <label>Država:</label>
+                <input 
+                    type="text" 
+                    name="destination.country.countryName" 
+                    value={formData.destination.country.countryName} 
+                    onChange={handleChange} 
+                />
+            </div>
+            <div className="form-group">
+                <label>Tip destinacije:</label>
+                <input 
+                    type="text" 
+                    name="destination.locationType" 
+                    value={formData.destination.locationType} 
+                    onChange={handleChange} 
+                />
+            </div>
+        </div>
 
-                <h3>Troškovi:</h3>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Troškovi putovanja:</label>
-                        <input 
-                            type="number" 
-                            name="costs.travelCost" 
-                            value={formData.costs.travelCost} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Troškovi smeštaja:</label>
-                        <input 
-                            type="number" 
-                            name="costs.accommodationCost" 
-                            value={formData.costs.accommodationCost} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Ostali troškovi:</label>
-                        <input 
-                            type="number" 
-                            name="costs.otherCosts" 
-                            value={formData.costs.otherCosts} 
-                            onChange={handleChange} 
-                        />
-                    </div>
-                </div>
-                
-                <h3>Opis putavnja i fotografije:</h3>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Opis putovanja:</label>
-                        <textarea 
-                            name="description" 
-                            value={formData.description} 
-                            onChange={handleChange} 
-                        />
-                    </div>
+        <h3 className="section-header">Opis putovanja i fotografije</h3> {/* Dodajemo crni header iznad */}
+        
+        <div className="form-row">
+            <div className="form-group">
+                <label>Opis putovanja:</label>
+                <textarea 
+                    name="description" 
+                    value={formData.description} 
+                    onChange={handleChange} 
+                />
+            </div>
+        </div>
+
+        <div className="form-row">
+            <div className="form-group">
+                <label>Fotografije:</label>
                     <div className="images-container">
-                        {formData.images.map((imageUrl, index) => (
-                            <div key={index} className="image-preview">
-                                <img src={imageUrl} alt={`Experience ${index}`} />
-                                <button type="button" onClick={() => handleImageRemove(index)}>
-                                    Ukloni
-                                </button>
-                            </div>
-                        ))}
-                        <div className="form-group">
-                            <label>Fotografije:</label>
+                        <div className="file-input-wrapper">
                             <input 
                                 type="file" 
                                 multiple 
                                 onChange={handleImageChange} 
+                                className="image-input"
                             />
                         </div>
+                        {formData.images.length > 0 && (
+                            <div className="images-list-container">
+                                {formData.images.map((imageUrl, index) => (
+                                    <div key={index} className="image-preview-item">
+                                        <img src={imageUrl} alt={`Experience ${index}`} className="image-preview-thumbnail" />
+                                        <button type="button" className="remove-image-button" onClick={() => handleImageRemove(index)}>
+                                            &times;
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                </div>
+                    </div>
+        </div> 
 
-                <button type="submit" className="submit-button">Izmeni Iskustvo</button>
-                <button type="button" className="back-button" onClick={handleBackClick}>Nazad</button>
-            </form>
-        </div>
+        <button type="submit" className="submit-button">Izmeni Iskustvo</button>
+        <button type="button" className="back-button" onClick={handleBackClick}>Nazad</button>
+    </form>
+</div>
+
     );
 };
 
