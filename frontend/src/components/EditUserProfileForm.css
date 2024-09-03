@@ -76,3 +76,52 @@
 .submit-button:hover, .back-button:hover, .change-password-button:hover {
     background-color: #105BB3;
 }
+
+/* Stil za sliku */
+.profile-picture-preview {
+    width: 100px; /* Fiksna širina */
+    height: 100px; /* Fiksna visina */
+    border-radius: 50%; /* Okrugli oblik */
+    object-fit: cover; /* Za pravilno prikazivanje slike unutar kruga */
+    margin-right: 10px; /* Razmak između slike i dugmeta */
+    position: relative; /* Omogućava pozicioniranje dugmeta za brisanje unutar slike */
+}
+
+/* Stil za dugme za uklanjanje slike */
+.remove-image-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 107, 107, 0.8); /* Poluprovidna crvena boja */
+    color: white;
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover efekat za dugme za uklanjanje slike */
+.remove-image-button:hover {
+    background-color: rgba(255, 76, 76, 0.8);
+}
+
+/* Stil za unos slike */
+.image-input {
+    display: flex;
+    display: inline-block; /* Drži input inline sa ostalim elementima */
+    margin-top: 10px; /* Razmak između slike i input polja */
+    opacity: 0.9; /* Blago providan kada je onemogućen */
+}
+
+/* Stil za kontejner slike */
+.image-container {
+    display: flex; /* Koristi flexbox za raspored slike i dugmeta */
+    align-items: center; /* Centriranje elemenata po vertikali */
+    margin-bottom: 10px; /* Razmak između slike i input polja */
+}

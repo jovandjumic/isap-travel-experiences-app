@@ -40,7 +40,12 @@ const UserProfile = () => {
                 </p>
                 <div className="user-info-container">
                     <div className="profile-picture-container">
-                        <img src={user.profilePicture || '/path/to/default-avatar.jpg'} alt={`${user.username} avatar`} className="profile-picture" />
+                    <img 
+    src={user.profilePicture ? `http://localhost:8080/uploads/${user.profilePicture.split('\\').pop()}` : '/path/to/default-avatar.jpg'} 
+    alt={`${user.username} avatar`} 
+    className="profile-picture" 
+/>
+
                     </div>
                     <div className="user-info-bio-container">
                         <div className="name-username-container">

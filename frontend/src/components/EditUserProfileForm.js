@@ -7,7 +7,7 @@ import { AuthContext } from '../contexts/AuthContextProvider';
 const EditUserProfileForm = () => {
     const { userId } = useContext(AuthContext);
     const navigate = useNavigate();
-    
+
     const [formData, setFormData] = useState({
         username: '',
         firstName: '',
@@ -18,8 +18,10 @@ const EditUserProfileForm = () => {
         profilePicture: ''
     });
 
+    const [pendingUpload, setPendingUpload] = useState(null);
+    const [pendingRemoval, setPendingRemoval] = useState(null);
+
     useEffect(() => {
-        // Učitavanje podataka o korisniku
         const fetchUserProfile = async () => {
             try {
                 const token = localStorage.getItem('accessToken');
@@ -27,8 +29,7 @@ const EditUserProfileForm = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 };
                 const response = await api.get(`/users/${userId}`, config);
-                
-                // Postavljanje podataka u formu
+
                 setFormData({
                     username: response.data.username || '',
                     firstName: response.data.firstName || '',
@@ -50,7 +51,6 @@ const EditUserProfileForm = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         setFormData((prevState) => ({
             ...prevState,
             [name]: value
@@ -60,35 +60,70 @@ const EditUserProfileForm = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         const imageUrl = URL.createObjectURL(file);
+
         setFormData((prevState) => ({
             ...prevState,
             profilePicture: imageUrl
         }));
+
+        setPendingUpload(file);
+    };
+
+    const handleImageRemove = () => {
+        setPendingRemoval(true); // Obeležavamo da je potrebno obrisati trenutnu sliku
+    
+        setFormData((prevState) => ({
+            ...prevState,
+            profilePicture: '' // Uklanjamo sliku iz prikaza
+        }));
     };
 
     const handleBackClick = () => {
-        navigate(`/profile/${userId}`); // Navigacija na stranicu profila
+        navigate(`/profile/${userId}`);
     };
 
     const handlePasswordChange = () => {
-        navigate(`/change-password`); // Navigacija na stranicu za promenu lozinke
+        navigate(`/change-password`);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('accessToken');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+    
         try {
-            const token = localStorage.getItem('accessToken');
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
+            // Remove the old profile picture if a new one is selected
+            if (pendingRemoval) {
+                await api.delete(`/users/${userId}/profile-picture`, config);
+            }
+    
+            // Upload the new profile picture if one is selected
+            let uploadedImageUrl = formData.profilePicture; // Zadržavamo trenutni URL slike ako nema nove
+            if (pendingUpload) {
+                const imageFormData = new FormData();
+                imageFormData.append('file', pendingUpload);
+                const uploadResponse = await api.post(`/users/${userId}/profile-picture`, imageFormData, config);
+                uploadedImageUrl = uploadResponse.data.split(': ')[1];
+            }
+    
+            // Update the user's profile with the rest of the form data
+            const updatedFormData = {
+                ...formData,
+                profilePicture: uploadedImageUrl // Ažuriramo URL slike ako je promenjena
             };
-            await api.put(`/users/${userId}`, formData, config);
+    
+            await api.put(`/users/${userId}`, updatedFormData, config);
             alert('Podaci su uspešno izmenjeni!');
-            navigate(`/profile/${userId}`); // Preusmeravanje na stranicu profila
+            navigate(`/profile/${userId}`);
+    
         } catch (error) {
             console.error('Greška prilikom izmene podataka:', error);
             alert('Izmena podataka nije uspela. Molimo pokušajte ponovo.');
         }
     };
+    
 
     return (
         <div className="edit-user-profile-form-container">
@@ -167,9 +202,16 @@ const EditUserProfileForm = () => {
                 <div className="form-row">
                     <div className="form-group">
                         <label>Profilna slika:</label>
+                        {formData.profilePicture && (
+                            <div className="image-container">
+                                <img src={formData.profilePicture} alt="Profile" className="profile-picture-preview" />
+                                <button type="button" className="remove-image-button" onClick={handleImageRemove}>Ukloni</button>
+                            </div>
+                        )}
                         <input 
                             type="file" 
                             onChange={handleImageChange} 
+                            className="image-input"// Onemogućeno ako slika već postoji
                         />
                     </div>
                 </div>
