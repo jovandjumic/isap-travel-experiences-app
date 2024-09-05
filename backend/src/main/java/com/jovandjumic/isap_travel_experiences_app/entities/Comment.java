@@ -1,5 +1,6 @@
 package com.jovandjumic.isap_travel_experiences_app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class Comment {
     private AppUser appUser;
 
     @ManyToOne
+    @JsonIgnore
     private Experience experience;
 
     private Date commentDate;

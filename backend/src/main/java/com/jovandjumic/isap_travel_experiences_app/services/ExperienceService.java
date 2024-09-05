@@ -2,7 +2,9 @@ package com.jovandjumic.isap_travel_experiences_app.services;
 
 import com.jovandjumic.isap_travel_experiences_app.Specification.ExperienceSpecifications;
 import com.jovandjumic.isap_travel_experiences_app.entities.AppUser;
+import com.jovandjumic.isap_travel_experiences_app.entities.Country;
 import com.jovandjumic.isap_travel_experiences_app.entities.Experience;
+import com.jovandjumic.isap_travel_experiences_app.repositories.CountryRepository;
 import com.jovandjumic.isap_travel_experiences_app.repositories.ExperienceRepository;
 import com.jovandjumic.isap_travel_experiences_app.repositories.UserRepository;
 
@@ -28,10 +30,24 @@ public class ExperienceService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CountryRepository countryRepository;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
+
     public Experience createExperience(Experience experience) {
         experience.setAppUser(userService.getCurrentUser());
         experience.setCreatedAt(new Date());
         experience.setComments(new ArrayList<>());
+
+        if (experience.getDestination() != null && experience.getDestination().getCountry() != null) {
+            String countryName = experience.getDestination().getCountry().getCountryName();
+            Country country = countryRepository.findByCountryName(countryName)
+                    .orElseThrow(() -> new IllegalArgumentException("Country not found"));
+            experience.getDestination().setCountry(country); // Postavljanje postojeće države
+        }
+
         experience.calculateCostPerPerson();
         return experienceRepository.save(experience);
     }
@@ -83,6 +99,11 @@ public class ExperienceService {
         if (!existingExperience.getAppUser().getUsername().equals(userService.getCurrentUser().getUsername())) {
             throw new AccessDeniedException("You do not have permission to delete this experience");
         }
+
+        if(existingExperience.getImages()!=null) {
+            for (String imageUrl : existingExperience.getImages()) {
+                imageStorageService.deleteImage(imageUrl);
+            }}
 
         experienceRepository.deleteById(id);
     }

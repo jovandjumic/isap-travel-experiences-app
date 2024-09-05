@@ -3,6 +3,7 @@ import api from '../services/api';
 import './EditUserProfileForm.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContextProvider';
+import defaultUserPhoto from '../assets/images/default_user_3.png';
 
 const EditUserProfileForm = () => {
     const { userId } = useContext(AuthContext);
@@ -79,7 +80,7 @@ const EditUserProfileForm = () => {
     };
 
     const handleBackClick = () => {
-        navigate(`/profile/${userId}`);
+        navigate(`/users/${userId}`);
     };
 
     const handlePasswordChange = () => {
@@ -116,7 +117,7 @@ const EditUserProfileForm = () => {
     
             await api.put(`/users/${userId}`, updatedFormData, config);
             alert('Podaci su uspešno izmenjeni!');
-            navigate(`/profile/${userId}`);
+            navigate(`/users/${userId}`);
     
         } catch (error) {
             console.error('Greška prilikom izmene podataka:', error);
@@ -202,12 +203,14 @@ const EditUserProfileForm = () => {
                 <div className="form-row">
                     <div className="form-group">
                         <label>Profilna slika:</label>
-                        {formData.profilePicture && (
                             <div className="image-container">
-                                <img src={formData.profilePicture} alt="Profile" className="profile-picture-preview" />
-                                <button type="button" className="remove-image-button" onClick={handleImageRemove}>Ukloni</button>
+                                <img src={(formData.profilePicture && formData.profilePicture.startsWith('blob:') ? formData.profilePicture : `http://localhost:8080/uploads/${formData.profilePicture.split('\\').pop()}`) || defaultUserPhoto} alt="Profile" className="profile-picture-preview" />
+                                {formData.profilePicture && formData.profilePicture !== '' && (
+    <button type="button" className="remove-profile-image-button" onClick={handleImageRemove}>
+        &times;
+    </button>
+)}
                             </div>
-                        )}
                         <input 
                             type="file" 
                             onChange={handleImageChange} 

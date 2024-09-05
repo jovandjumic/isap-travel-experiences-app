@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import './AddExperienceForm.css';
 import { useNavigate } from 'react-router-dom';
 
 const AddExperienceForm = () => {
+
+    const [useCustomLocationType, setUseCustomLocationType] = useState(false);
+const [customLocationType, setCustomLocationType] = useState('');
     const navigate = useNavigate();
+    const [countries, setCountries] = useState([]); // State za čuvanje država
     const [formData, setFormData] = useState({
         destination: {
             locationName: '',
             regionArea: '',
             country: {
                 countryName: '',
+                continent: '',
             },
             locationType: ''
         },
@@ -27,9 +32,43 @@ const AddExperienceForm = () => {
         description: ''
     });
 
+    const handleCountryChange = (e) => {
+        const selectedCountryName = e.target.value;
+        const selectedCountry = countries.find(
+            (country) => country.countryName === selectedCountryName
+        );
+    
+        if (selectedCountry) {
+            setFormData((prevState) => ({
+                ...prevState,
+                destination: {
+                    ...prevState.destination,
+                    country: {
+                        countryName: selectedCountry.countryName,
+                        continent: selectedCountry.continent, // Postavi kontinent automatski
+                    },
+                },
+            }));
+        }
+    };
+
+    useEffect(() => {
+        // Dohvatanje lista država sa servera
+        const fetchCountries = async () => {
+            try {
+                const response = await api.get('/countries'); // API poziv za dohvatanje država
+                setCountries(response.data);
+            } catch (error) {
+                console.error("Failed to fetch countries:", error);
+            }
+        };
+        fetchCountries();
+    }, []);
+
     // Stanja za čuvanje privremenih slika koje treba da se uploaduju ili obrišu nakon submita
     const [pendingUploads, setPendingUploads] = useState([]);
     const [pendingRemovals, setPendingRemovals] = useState([]);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -50,10 +89,15 @@ const AddExperienceForm = () => {
         });
     };
 
+    const handleBackClick = () => {
+        setPendingUploads([]);
+        navigate('/experiences'); // Navigacija na početnu stranu
+    };
+
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
         const newImageUrls = files.map(file => URL.createObjectURL(file));
-
+    
         setFormData((prevState) => ({
             ...prevState,
             images: [...prevState.images, ...newImageUrls],
@@ -62,74 +106,98 @@ const AddExperienceForm = () => {
         // Čuvanje file-ova za upload nakon submita
         setPendingUploads((prev) => [...prev, ...files]);
     };
-
+    
     const handleImageRemove = (index) => {
-        const removedImageUrl = formData.images[index];
-
+        // Uklanjanje URL-a iz formData.images
         setFormData((prevState) => {
             const newImages = [...prevState.images];
             newImages.splice(index, 1);
             return { ...prevState, images: newImages };
         });
-
-        // Čuvanje URL-a slike za brisanje nakon submita
-        setPendingRemovals((prev) => [...prev, removedImageUrl]);
+    
+        // Uklanjanje odgovarajućeg fajla iz pendingUploads
+        setPendingUploads((prev) => {
+            const newPendingUploads = [...prev];
+            newPendingUploads.splice(index, 1); // Uklanja fajl na istom indexu
+            return newPendingUploads;
+        });
     };
-
-    const handleBackClick = () => {
-        navigate('/experiences'); // Navigacija na početnu stranu
-    };
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('accessToken');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
     
         try {
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
+            // Kreiranje Experience objekta bez slika
+            const { images, ...formDataWithoutImages } = formData; // Uklanjanje images polja pre slanja
+            const response = await api.post('/experiences', formDataWithoutImages, config);
+            const experienceId = response.data.id; // Pretpostavka da server vraća ID novog Experience objekta
     
-            // Kreiranje novog iskustva bez slika
-            const response = await api.post('/experiences',formData, config);
-            const experienceId = response.data.id;
-    
-            // Uploadovanje novih slika
+            // Sada uploadujte slike i povežite ih sa kreiranim Experience-om
             const uploadedImageUrls = await Promise.all(pendingUploads.map(async (file) => {
-                const imageFormData = new FormData();
-                imageFormData.append('file', file);
+                const uploadData = new FormData();
+                uploadData.append('file', file);
                 const uploadConfig = {
                     headers: { 
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'text/plain'
+                        'Content-Type': 'multipart/form-data'
                     }
                 };
-                const uploadResponse = await api.post(`/experiences/${experienceId}/images`, imageFormData, uploadConfig);
-                return uploadResponse.data.split(": ")[1]; // Dobijamo samo URL
+                const uploadResponse = await api.post(`/experiences/${experienceId}/images`, uploadData, uploadConfig);
+                return uploadResponse.data.imageUrl; // Pretpostavka da server vraća URL slike
             }));
     
-            // Zamenite blob URL-ove sa stvarnim URL-ovima sa servera
-            setFormData((prevState) => ({
-                ...prevState,
-                images: [...uploadedImageUrls],
-            }));
+            // Ažuriranje Experience objekta sa URL-ovima slika
+            const updatedFormData = {
+                ...formDataWithoutImages,
+                images: uploadedImageUrls, // Dodavanje samo stvarnih URL-ova slika
+            };
+            await api.put(`/experiences/${experienceId}`, updatedFormData, config);
     
             alert('Iskustvo uspešno dodato!');
-            navigate('/experiences'); // Preusmeravanje na listu iskustava
+            navigate('/experiences');
     
             // Reset stanja nakon uspešnog submita
             setPendingUploads([]);
-            setPendingRemovals([]);
+            setFormData({
+                destination: {
+                    locationName: '',
+                    regionArea: '',
+                    country: {
+                        countryName: '',
+                        continent: '',
+                    },
+                    locationType: ''
+                },
+                daysSpent: '',
+                costs: {
+                    travelCost: '',
+                    travelMode: '',
+                    travelRoute: '',
+                    accommodationCost: '',
+                    otherCosts: ''
+                },
+                numberOfPeople: '',
+                images: [],
+                description: ''
+            }); // Reset formData nakon uspešnog dodavanja
         } catch (error) {
             console.error('Greška prilikom dodavanja iskustva:', error);
             alert('Dodavanje iskustva nije uspelo. Molimo pokušajte ponovo.');
         }
     };
     
+    
+    
+    
 
     return (
         <div className="add-experience-form-container">
             <form onSubmit={handleSubmit} className="add-experience-form">
-                <h2>Dodaj novo iskustvo</h2>
+                <h2>Dodaj novo putovanje</h2>
 
                 <div className="form-row">
                     <div className="form-group">
@@ -153,14 +221,23 @@ const AddExperienceForm = () => {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Način putovanja:</label>
-                        <input 
-                            type="text" 
-                            name="costs.travelMode" 
-                            value={formData.costs.travelMode} 
-                            onChange={handleChange} 
-                        />
-                    </div>
+    <label>Prevozno sredstvo:</label>
+    <select 
+        name="costs.travelMode" 
+        value={formData.costs.travelMode} 
+        onChange={handleChange}
+        required
+    >
+        <option value="">Izaberite prevozno sredstvo</option>
+        <option value="automobil">Automobil</option>
+        <option value="autobus">Autobus</option>
+        <option value="voz">Voz</option>
+        <option value="avion">Avion</option>
+        <option value="bicikl">Bicikl</option>
+        <option value="pešice">Pešice</option>
+        <option value="brod">Brod</option>
+    </select>
+</div>
                     <div className="form-group">
                         <label>Putna ruta:</label>
                         <input 
@@ -194,26 +271,113 @@ const AddExperienceForm = () => {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Država:</label>
+    <label>Država:</label>
+    <select 
+        name="destination.country.countryName" 
+        value={formData.destination.country.countryName} 
+        onChange={handleCountryChange} 
+        required
+    >
+        <option value="">Izaberite državu</option>
+        {countries.map(country => (
+            <option key={country.id} value={country.countryName}>
+                {country.countryName}
+            </option>
+        ))}
+    </select>
+</div>
+                    <div className="form-group">
+                    <label>Tip destinacije:</label>
+                    <select
+                        value={useCustomLocationType ? 'custom' : formData.destination.locationType}
+                        onChange={(e) => {
+                            const selectedValue = e.target.value;
+                            if (selectedValue === 'custom') {
+                                setUseCustomLocationType(true);
+                                setCustomLocationType('');
+                                setFormData((prevState) => ({
+                                    ...prevState,
+                                    destination: {
+                                        ...prevState.destination,
+                                        locationType: ''
+                                    }
+                                }));
+                            } else {
+                                setUseCustomLocationType(false);
+                                setFormData((prevState) => ({
+                                    ...prevState,
+                                    destination: {
+                                        ...prevState.destination,
+                                        locationType: selectedValue
+                                    }
+                                }));
+                            }
+                        }}
+                    >
+        <option value="">Izaberite tip destinacije</option>
+        <option value="Grad">Grad</option>
+        <option value="Selo">Selo</option>
+        <option value="Plaža">Plaža</option>
+        <option value="Ostrvo">Ostrvo</option>
+        <option value="Planina">Planina</option>
+        <option value="Reka">Reka</option>
+        <option value="Jezero">Reka</option>
+        <option value="custom">Prilagođeno</option>
+    </select>
+
+    {useCustomLocationType && (
+                <input className='customfield'
+                    type="text" 
+                    placeholder="Unesite tip destinacije" 
+                    value={customLocationType} 
+                    onChange={(e) => {
+                        const customValue = e.target.value;
+                        setCustomLocationType(customValue);
+                        setFormData((prevState) => ({
+                            ...prevState,
+                            destination: {
+                                ...prevState.destination,
+                                locationType: customValue
+                            }
+                        }));
+                    }}
+                />
+            )}
+        </div>
+                </div>
+
+                <h3>Troškovi:</h3>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label>Troškovi prevoza:</label>
                         <input 
-                            type="text" 
-                            name="destination.country.countryName" 
-                            value={formData.destination.country.countryName} 
+                            type="number" 
+                            name="costs.travelCost" 
+                            value={formData.costs.travelCost} 
                             onChange={handleChange} 
                         />
                     </div>
                     <div className="form-group">
-                        <label>Tip destinacije:</label>
+                        <label>Troškovi smeštaja:</label>
                         <input 
-                            type="text" 
-                            name="destination.locationType" 
-                            value={formData.destination.locationType} 
+                            type="number" 
+                            name="costs.accommodationCost" 
+                            value={formData.costs.accommodationCost} 
+                            onChange={handleChange} 
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Ostali troškovi:</label>
+                        <input 
+                            type="number" 
+                            name="costs.otherCosts" 
+                            value={formData.costs.otherCosts} 
                             onChange={handleChange} 
                         />
                     </div>
                 </div>
 
-                <h3 className="section-header">Opis putovanja i fotografije</h3>
+                <h3 className="section-header">Opis putovanja i fotografije:</h3>
                 
                 <div className="form-row">
                     <div className="form-group">
@@ -240,21 +404,26 @@ const AddExperienceForm = () => {
                                 </div>
                                 {formData.images.length > 0 && (
                                     <div className="images-list-container">
-                                        {formData.images.map((imageUrl, index) => (
-                                            <div key={index} className="image-preview-item">
-                                                <img src={imageUrl} alt={`Experience ${index}`} className="image-preview-thumbnail" />
-                                                <button type="button" className="remove-image-button" onClick={() => handleImageRemove(index)}>
-                                                    &times;
-                                                </button>
-                                            </div>
-                                        ))}
+                                        {formData.images.map((imageUrl, index) => {
+                                            // Provera da li je imageUrl blob URL ili pravi URL sa servera
+                                            const isBlob = imageUrl.startsWith('blob:');
+                                            const imageSrc = isBlob ? imageUrl : `http://localhost:8080/uploads/${imageUrl.split('\\').pop()}`;
+                                            return (
+                                                <div key={index} className="image-preview-item">
+                                                    <img src={imageSrc} alt={`Experience ${index}`} className="image-preview-thumbnail" />
+                                                    <button type="button" className="remove-image-button" onClick={() => handleImageRemove(index)}>
+                                                        &times;
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </div>
                             </div>
                 </div> 
 
-                <button type="submit" className="submit-button">Dodaj Iskustvo</button>
+                <button type="submit" className="submit-button">Dodaj Putovanje</button>
                 <button type="button" className="back-button" onClick={handleBackClick}>Nazad</button>
             </form>
         </div>

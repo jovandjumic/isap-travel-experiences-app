@@ -79,6 +79,8 @@
 
 /* Stil za sliku */
 .profile-picture-preview {
+    position: relative;
+    margin-top: 10px;
     width: 100px; /* Fiksna širina */
     height: 100px; /* Fiksna visina */
     border-radius: 50%; /* Okrugli oblik */
@@ -88,11 +90,11 @@
 }
 
 /* Stil za dugme za uklanjanje slike */
-.remove-image-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(255, 107, 107, 0.8); /* Poluprovidna crvena boja */
+.remove-profile-image-button {
+    position: relative;
+    top: -45px;
+    right: 25px;
+    background-color: #FF4365; /* Poluprovidna crvena boja */
     color: white;
     border: none;
     width: 20px;
@@ -107,8 +109,8 @@
 }
 
 /* Hover efekat za dugme za uklanjanje slike */
-.remove-image-button:hover {
-    background-color: rgba(255, 76, 76, 0.8);
+.remove-profile-image-button:hover {
+    background-color: #FF2745;
 }
 
 /* Stil za unos slike */

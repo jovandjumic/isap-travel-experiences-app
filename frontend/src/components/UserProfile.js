@@ -4,6 +4,7 @@ import api from '../services/api';
 import ExperienceList from './ExperienceList';
 import './UserProfile.css';
 import { AuthContext } from '../contexts/AuthContextProvider';
+import defaultUserPhoto from '../assets/images/default_user_3.png';
 
 const UserProfile = () => {
     const { id } = useParams();
@@ -41,10 +42,10 @@ const UserProfile = () => {
                 <div className="user-info-container">
                     <div className="profile-picture-container">
                     <img 
-    src={user.profilePicture ? `http://localhost:8080/uploads/${user.profilePicture.split('\\').pop()}` : '/path/to/default-avatar.jpg'} 
-    alt={`${user.username} avatar`} 
-    className="profile-picture" 
-/>
+                        src={user.profilePicture ? `http://localhost:8080/uploads/${user.profilePicture.split('\\').pop()}` : defaultUserPhoto} 
+                        alt={`${user.username} avatar`} 
+                        className="profile-picture" 
+                    />
 
                     </div>
                     <div className="user-info-bio-container">
@@ -66,7 +67,7 @@ const UserProfile = () => {
                     </div>
                 )}
             </div>
-            <h3>Iskustva korisnika {user.username}</h3>
+            <h3>Putovanja korisnika {user.username}</h3>
             <ExperienceList currentUser={user} />
         </div>
     );

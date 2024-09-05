@@ -41,6 +41,11 @@ public class SecurityConfiguration {
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .requestMatchers(GET,"/api/experiences/**").permitAll()
                                 .requestMatchers(GET,"/api/users/**").permitAll()
+                                .requestMatchers(GET, "/api/comments/**").permitAll()  // Dohvatanje komentara je javno
+                                .requestMatchers(POST, "/api/comments/**").authenticated()  // Dodavanje komentara zahteva autentifikaciju
+                                .requestMatchers(PUT, "/api/comments/**").authenticated()   // Ažuriranje komentara zahteva autentifikaciju
+                                .requestMatchers(DELETE, "/api/comments/**").authenticated() // Brisanje komentara zahteva autentifikaciju
+                                .requestMatchers(GET,"api/countries/**").permitAll()
                                 .requestMatchers("/uploads/**").permitAll()
                                 .anyRequest().authenticated()
                 )

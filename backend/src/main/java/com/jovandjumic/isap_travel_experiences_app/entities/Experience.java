@@ -18,14 +18,14 @@ public class Experience {
     @ManyToOne
     private AppUser appUser;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Destination destination;
 
     @Setter
     @Getter
     private Integer daysSpent;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Costs costs;
 
     private Integer likes = 0;

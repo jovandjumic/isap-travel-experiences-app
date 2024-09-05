@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +31,8 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Long id, @RequestBody String content) {
+    public ResponseEntity<Comment> updateComment(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String content = payload.get("content");  // Uzimamo "content" iz JSON-a
         Comment updatedComment = commentService.updateComment(id, content);
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }

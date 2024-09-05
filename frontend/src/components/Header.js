@@ -2,7 +2,7 @@
 import React, { useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faPlus, faSignInAlt, faUserPlus, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faPlus, faSignInAlt, faUserPlus, faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
 import './Header.css';
 import { AuthContext } from '../contexts/AuthContextProvider';
 import logo from '../assets/images/logo.png';
@@ -40,6 +40,18 @@ const Header = () => {
         }
     };
 
+    const handleClick = () => {
+        if (isAuthenticated) {
+            navigate('/add-experience');
+        } else {
+            navigate('/login');
+        }
+    };
+
+    const handleHomePage = () => {
+            navigate('/');
+    };
+
     const handleProfileClick = () => {
         navigate(`/users/${userId}`);
     };
@@ -53,16 +65,25 @@ const Header = () => {
                     </Link>
                 </div>
                 <nav className="nav-links">
+                    <button className="nav-button" onClick={handleHomePage}>
+                        <FontAwesomeIcon icon={faHome} className="button-icon" />
+                        <span>Početna strana</span>
+                    </button>
+                    <button className="nav-button" onClick={handleClick}>
+                        <FontAwesomeIcon icon={faPlus} className="button-icon" />
+                        <span>Dodaj Putovanje</span>
+                    </button>
                     {isAuthenticated && (
                         <button onClick={handleProfileClick} className="nav-button">
                         <FontAwesomeIcon icon={faUser} className="button-icon" />
                         <span>Moj Profil</span>
                     </button>
                     )}
-                    <Link to="/add-experience" className="nav-button">
-                        <FontAwesomeIcon icon={faPlus} className="button-icon" />
-                        <span>Dodaj Iskustvo</span>
-                    </Link>
+                    {!isAuthenticated && (
+                    <Link to="/register" className="nav-button">
+                        <FontAwesomeIcon icon={faUserPlus} className="button-icon" />
+                        <span>Registracija</span>
+                    </Link>)}
                     {isAuthenticated ? (
                         <button onClick={handleLogout} className="nav-button">
                             <FontAwesomeIcon icon={faSignOutAlt} className="button-icon" />
@@ -74,10 +95,6 @@ const Header = () => {
                             <span>Prijava</span>
                         </Link>
                     )}
-                    <Link to="/register" className="nav-button">
-                        <FontAwesomeIcon icon={faUserPlus} className="button-icon" />
-                        <span>Registracija</span>
-                    </Link>
                 </nav>
             </div>
         </header>
