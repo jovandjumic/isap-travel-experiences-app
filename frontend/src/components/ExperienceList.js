@@ -138,7 +138,7 @@ const ExperienceList = ({ currentUser }) => {
                         src={experience.images?.[0]
                             ? experience.images[0].startsWith('blob:')
                                 ? experience.images[0]
-                                : `http://localhost:8080/uploads/${experience.images[0].split('\\').pop()}`
+                                : `${process.env.REACT_APP_IMAGE_URL}/uploads/${experience.images[0].split('\\').pop()}`
                             : defaultPhoto}
                         alt="Experience" 
                         className="experience-image"

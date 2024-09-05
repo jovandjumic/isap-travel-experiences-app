@@ -12,10 +12,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${image.storage.path}")
     private String storagePath;
 
+    @Value("${cors.allowed.origins}")
+    private String allowedOrigins;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins(allowedOrigins)
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);

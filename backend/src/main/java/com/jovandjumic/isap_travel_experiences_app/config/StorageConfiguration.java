@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Profile;
 public class StorageConfiguration {
 
     @Bean
-    @Profile("dev")
     public ImageStorageService localImageStorageService() {
         return new LocalImageStorageService();
     }

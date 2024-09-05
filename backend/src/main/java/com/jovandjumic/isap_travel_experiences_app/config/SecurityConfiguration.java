@@ -1,5 +1,6 @@
 package com.jovandjumic.isap_travel_experiences_app.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,12 @@ import static org.springframework.http.HttpMethod.*;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+
+
     private static final String[] WHITE_LIST_URL = {"/api/auth/**"};
-    private static final String[] ALLOWED_ORIGINS = {"http://localhost:3000"};
+
+    @Value("${cors.allowed.origins}")
+    private String allowedOrigins;
 
     @Autowired
     JwtAuthenticationFilter jwtAuthFilter;
@@ -56,7 +61,16 @@ public class SecurityConfiguration {
                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
         );
 
-        http.cors(Customizer.withDefaults());
+        http.cors(cors -> cors
+                .configurationSource(request -> {
+                    var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfiguration.addAllowedOrigin(allowedOrigins);  // Koristi vrednost iz properties fajla
+                    corsConfiguration.addAllowedMethod("*");
+                    corsConfiguration.addAllowedHeader("*");
+                    corsConfiguration.setAllowCredentials(true);
+                    return corsConfiguration;
+                })
+        );
 
         return http.build();
     }
