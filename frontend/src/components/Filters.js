@@ -20,6 +20,10 @@ const Filters = ({ onFilterChange }) => {
     const [sortOrder, setSortOrder] = useState('desc');
     const [pageSize, setPageSize] = useState(10);
 
+    const [customLocationType, setCustomLocationType] = useState('');
+    const [useCustomLocationType, setUseCustomLocationType] = useState(false);
+
+
     useEffect(() => {
         // Kada se priceType promeni, ažuriraj sortField ako je trenutni sortField 'cost'
         if (sortField === 'costs.totalCost' || sortField === 'costPerPerson') {
@@ -147,17 +151,54 @@ const Filters = ({ onFilterChange }) => {
                 />
             </div>
             <div className="filters-row">
-                <label>Tip destinacije:</label>
-                <input 
-                    type="text" 
-                    placeholder="Tip destinacije" 
-                    value={destination.locationType} 
-                    onChange={(e) => setDestination(prevState => ({
-                        ...prevState,
-                        locationType: e.target.value
-                    }))} 
-                />
-            </div>
+    <label>Tip destinacije:</label>
+    <select 
+        value={useCustomLocationType ? 'custom' : destination.locationType} 
+        onChange={(e) => {
+            const selectedValue = e.target.value;
+            if (selectedValue === 'custom') {
+                setUseCustomLocationType(true);
+                setDestination(prevState => ({
+                    ...prevState,
+                    locationType: ''
+                }));
+            } else {
+                setUseCustomLocationType(false);
+                setDestination(prevState => ({
+                    ...prevState,
+                    locationType: selectedValue
+                }));
+            }
+        }}
+    >
+        <option value="">Izaberite tip destinacije</option>
+        <option value="Grad">Grad</option>
+        <option value="Selo">Selo</option>
+        <option value="Plaža">Plaža</option>
+        <option value="Ostrvo">Ostrvo</option>
+        <option value="Planina">Planina</option>
+        <option value="Reka">Reka</option>
+        <option value="Jezero">Reka</option>
+        <option value="custom">Prilagođeno</option>
+    </select>
+
+    {useCustomLocationType && (
+        <input 
+            type="text" 
+            placeholder="Unesite tip destinacije" 
+            value={customLocationType} 
+            onChange={(e) => {
+                const customValue = e.target.value;
+                setCustomLocationType(customValue);
+                setDestination(prevState => ({
+                    ...prevState,
+                    locationType: customValue
+                }));
+            }}
+        />
+    )}
+</div>
+
             <div className="filters-row">
                 <label>Sortiraj po:</label>
                 <select value={sortField} onChange={handleSortFieldChange}>
@@ -171,7 +212,7 @@ const Filters = ({ onFilterChange }) => {
                 </select>
             </div>
             <div className="filters-row">
-                <label>Broj iskustava po strani:</label>
+                <label>Broj putovanja po strani:</label>
                 <input 
                     type="number" 
                     value={pageSize} 

@@ -26,6 +26,7 @@ const RegistrationForm = () => {
         try {
             const response = await api.post('/auth/register', formData);
             alert('Registracija uspešna!');
+            navigate('/login');
             // Možete dodati logiku za preusmeravanje korisnika ili čišćenje forme
         } catch (error) {
             console.error('Greška prilikom registracije:', error);

@@ -11,6 +11,7 @@ import UserProfile from './components/UserProfile.js';
 import EditExperienceForm from './components/EditExperienceForm.js';
 import EditUserProfileForm from './components/EditUserProfileForm.js';
 import ChangePasswordForm from './components/ChangePasswordForm.js';
+import ExperienceDetails from './components/ExperienceDetails.js';
 
 function App() {
     return (
@@ -21,10 +22,10 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Navigate to="/experiences" />} />
                         <Route path='/experiences' element={
-    <div className="user-profile">
-      <ExperienceList />
-    </div>
-  }></Route>
+                          <div className="user-profile">
+                            <ExperienceList />
+                          </div>
+                        }></Route>
                         <Route path='/register' Component={RegistrationForm}></Route>
                         <Route path='/login' Component={LoginForm}></Route>
                         <Route element={<ProtectedRoute />}>
@@ -34,6 +35,9 @@ function App() {
                         <Route path="/experiences/edit/:id" element={<EditExperienceForm />} />
                         <Route path="/users/:id/edit" element={<EditUserProfileForm />} /> {/* Ruta za izmenu korisničkih podataka */}
                         <Route path="/change-password" element={<ChangePasswordForm />} />
+                        <Route path="/experiences/:id" element={<div className="user-profile">
+                            <ExperienceDetails />
+                          </div>} />
                     </Routes>
                 </Router>
         </div>
