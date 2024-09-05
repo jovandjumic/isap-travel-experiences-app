@@ -19,18 +19,30 @@ public class DestinationService {
     @Autowired
     private CountryRepository countryRepository;
 
-    public Destination createDestination(Destination destination) {
-        return destinationRepository.save(destination);
-    }
-
+    // Dohvati destinaciju po ID-u
     public Optional<Destination> getDestinationById(Long id) {
         return destinationRepository.findById(id);
     }
 
+    // Vrati sve destinacije
     public List<Destination> getAllDestinations() {
         return destinationRepository.findAll();
     }
 
+    // Kreiraj novu destinaciju sa countryId
+    public Destination createDestination(Destination destination) {
+        if (destination.getCountryId() != null) {
+            Long countryId = destination.getCountryId();
+            Country country = countryRepository.findById(countryId)
+                    .orElseThrow(() -> new IllegalArgumentException("Country not found with ID: " + countryId));
+            destination.setCountryId(country.getId()); // Postavi ID države
+        } else {
+            throw new IllegalArgumentException("Country ID cannot be null");
+        }
+        return destinationRepository.save(destination);
+    }
+
+    // Ažuriraj postojeću destinaciju sa countryId
     public Destination updateDestination(Long id, Destination updatedDestination) {
         return destinationRepository.findById(id).map(existingDestination -> {
             if (updatedDestination.getLocationName() != null) {
@@ -42,17 +54,17 @@ public class DestinationService {
             if (updatedDestination.getRegionArea() != null) {
                 existingDestination.setRegionArea(updatedDestination.getRegionArea());
             }
-            if (updatedDestination.getCountry() != null) {
-                String countryName = updatedDestination.getCountry().getCountryName();
-                Country country = countryRepository.findByCountryName(countryName)
-                        .orElseThrow(() -> new IllegalArgumentException("Country not found"));
-                updatedDestination.setCountry(country);
-                existingDestination.setCountry(updatedDestination.getCountry());
+            if (updatedDestination.getCountryId() != null) {
+                Long countryId = updatedDestination.getCountryId();
+                Country country = countryRepository.findById(countryId)
+                        .orElseThrow(() -> new IllegalArgumentException("Country not found with ID: " + countryId));
+                existingDestination.setCountryId(country.getId());
             }
             return destinationRepository.save(existingDestination);
-        }).orElse(null);
+        }).orElseThrow(() -> new IllegalArgumentException("Destination not found with ID: " + id));
     }
 
+    // Obrisi destinaciju po ID-u
     public void deleteDestination(Long id) {
         destinationRepository.deleteById(id);
     }

@@ -13,10 +13,7 @@ const [customLocationType, setCustomLocationType] = useState('');
         destination: {
             locationName: '',
             regionArea: '',
-            country: {
-                countryName: '',
-                continent: '',
-            },
+            countryId: '',
             locationType: ''
         },
         daysSpent: '',
@@ -60,10 +57,8 @@ const [customLocationType, setCustomLocationType] = useState('');
                     destination: {
                         locationName: response.data.destination?.locationName || '',
                         regionArea: response.data.destination?.regionArea || '',
-                        country: {
-                            countryName: response.data.destination?.country?.countryName || '',
-                        },
-                        locationType: response.data.destination?.locationType || ''
+                        countryId: response.data.destination?.countryId || '',  // Postavljanje countryId
+                        locationType: response.data.destination?.locationType || '',
                     },
                     daysSpent: response.data.daysSpent || '',
                     costs: {
@@ -83,28 +78,19 @@ const [customLocationType, setCustomLocationType] = useState('');
                 console.error('Failed to fetch experience:', error);
             }
         };
-
+        
         fetchExperience();
     }, [id]);
 
     const handleCountryChange = (e) => {
-        const selectedCountryName = e.target.value;
-        const selectedCountry = countries.find(
-            (country) => country.countryName === selectedCountryName
-        );
-    
-        if (selectedCountry) {
-            setFormData((prevState) => ({
-                ...prevState,
-                destination: {
-                    ...prevState.destination,
-                    country: {
-                        countryName: selectedCountry.countryName,
-                        continent: selectedCountry.continent, // Postavi kontinent automatski
-                    },
-                },
-            }));
-        }
+        const selectedCountryId = e.target.value;
+        setFormData((prevState) => ({
+            ...prevState,
+            destination: {
+                ...prevState.destination,
+                countryId: selectedCountryId  // Sada čuvaš samo ID države
+            },
+        }));
     };
     
 
@@ -316,21 +302,21 @@ const [customLocationType, setCustomLocationType] = useState('');
                 />
             </div>
             <div className="form-group">
-    <label>Država:</label>
-    <select 
-        name="destination.country.countryName" 
-        value={formData.destination.country.countryName} 
-        onChange={handleCountryChange} 
-        required
-    >
-        <option value="">Izaberite državu</option>
-        {countries.map(country => (
-            <option key={country.id} value={country.countryName}>
-                {country.countryName}
-            </option>
-        ))}
-    </select>
-</div>
+            <label>Država:</label>
+            <select 
+                name="destination.countryId" 
+                value={formData.destination.countryId} 
+                onChange={handleCountryChange}
+            >
+                <option value="">Izaberite državu</option>
+                {countries.map(country => (
+                    <option key={country.id} value={country.id}>
+                        {country.countryName}
+                    </option>
+                ))}
+            </select>
+        </div>
+
             <div className="form-group">
                     <label>Tip destinacije:</label>
                     <select

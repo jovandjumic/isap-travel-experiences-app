@@ -19,8 +19,5 @@ public class Destination {
     private String locationType;
     private String regionArea;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id", nullable = false)
-    private Country country;
-
+    private Long countryId;
 }

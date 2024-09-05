@@ -85,7 +85,7 @@ public class ExperienceController {
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) String locationName,
             @RequestParam(required = false) String regionArea,
-            @RequestParam(required = false) String country,
+            @RequestParam(required = false) Long countryId,
             @RequestParam(required = false) String continent,
             @RequestParam(required = false) String locationType,
             @RequestParam(required = false) Integer minDays,
@@ -95,7 +95,7 @@ public class ExperienceController {
             @RequestParam(required = false) Double minCostPerPerson,
             @RequestParam(required = false) Double maxCostPerPerson,
             Pageable pageable) {
-        return experienceService.searchExperiences(userId, locationName, regionArea, country, continent, locationType, minDays, maxDays, minCost, maxCost, minCostPerPerson, maxCostPerPerson, pageable);
+        return experienceService.searchExperiences(userId, locationName, regionArea, countryId, continent, locationType, minDays, maxDays, minCost, maxCost, minCostPerPerson, maxCostPerPerson, pageable);
     }
 
     @PostMapping("/{id}/like")

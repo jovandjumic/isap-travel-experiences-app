@@ -13,10 +13,7 @@ const [customLocationType, setCustomLocationType] = useState('');
         destination: {
             locationName: '',
             regionArea: '',
-            country: {
-                countryName: '',
-                continent: '',
-            },
+            countryId: '',
             locationType: ''
         },
         daysSpent: '',
@@ -33,24 +30,15 @@ const [customLocationType, setCustomLocationType] = useState('');
     });
 
     const handleCountryChange = (e) => {
-        const selectedCountryName = e.target.value;
-        const selectedCountry = countries.find(
-            (country) => country.countryName === selectedCountryName
-        );
-    
-        if (selectedCountry) {
-            setFormData((prevState) => ({
-                ...prevState,
-                destination: {
-                    ...prevState.destination,
-                    country: {
-                        countryName: selectedCountry.countryName,
-                        continent: selectedCountry.continent, // Postavi kontinent automatski
-                    },
-                },
-            }));
-        }
-    };
+        const selectedCountryId = e.target.value;
+        setFormData((prevState) => ({
+            ...prevState,
+            destination: {
+                ...prevState.destination,
+                countryId: selectedCountryId  // Sada čuvaš samo ID države
+            },
+        }));
+    };    
 
     useEffect(() => {
         // Dohvatanje lista država sa servera
@@ -166,10 +154,7 @@ const [customLocationType, setCustomLocationType] = useState('');
                 destination: {
                     locationName: '',
                     regionArea: '',
-                    country: {
-                        countryName: '',
-                        continent: '',
-                    },
+                    countryId: '',
                     locationType: ''
                 },
                 daysSpent: '',
@@ -273,19 +258,19 @@ const [customLocationType, setCustomLocationType] = useState('');
                     <div className="form-group">
     <label>Država:</label>
     <select 
-        name="destination.country.countryName" 
-        value={formData.destination.country.countryName} 
-        onChange={handleCountryChange} 
-        required
+        name="destination.countryId" 
+        value={formData.destination.countryId} 
+        onChange={handleCountryChange}
     >
         <option value="">Izaberite državu</option>
         {countries.map(country => (
-            <option key={country.id} value={country.countryName}>
+            <option key={country.id} value={country.id}>
                 {country.countryName}
             </option>
         ))}
     </select>
 </div>
+
                     <div className="form-group">
                     <label>Tip destinacije:</label>
                     <select

@@ -18,6 +18,20 @@ const ExperienceList = ({ currentUser }) => {
 
     const navigate = useNavigate();
 
+    const [countries, setCountries] = useState([]); // State za države
+
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await api.get('/countries'); // API poziv za dohvatanje država
+                setCountries(response.data);
+            } catch (error) {
+                console.error("Failed to fetch countries:", error);
+            }
+        };
+        fetchCountries();
+    }, []);
+
     useEffect(() => {
         fetchExperiences();
     }, [filters, page, currentUser]);
@@ -113,16 +127,19 @@ const ExperienceList = ({ currentUser }) => {
             <div>
                 
 <ul className="experience-list">
-    {experiences.map(experience => (
+{experiences.map(experience => {
+    const country = countries.find(c => c.id === experience.destination?.countryId); // Pronalazimo državu po ID-ju
+    
+    return (
         <li key={experience.id} className="experience-item">
             <div className="experience-image-container">
                 <Link to={`/experiences/${experience.id}`}>
                     <img 
                         src={experience.images?.[0]
                             ? experience.images[0].startsWith('blob:')
-                                ? experience.images[0] // Ako je Blob URL, koristi ga direktno
-                                : `http://localhost:8080/uploads/${experience.images[0].split('\\').pop()}` // Ako nije, dodaj prefiks za server
-                            : defaultPhoto} // Podrazumevana slika ako nema nijedne
+                                ? experience.images[0]
+                                : `http://localhost:8080/uploads/${experience.images[0].split('\\').pop()}`
+                            : defaultPhoto}
                         alt="Experience" 
                         className="experience-image"
                     />
@@ -155,7 +172,7 @@ const ExperienceList = ({ currentUser }) => {
                         <p className="experience-destination">
                             <strong>Destinacija:</strong> {experience.destination?.locationName || ''} 
                             {experience.destination?.regionArea && `, ${experience.destination.regionArea}`} 
-                            {experience.destination?.country?.countryName && `, ${experience.destination.country.countryName}`} 
+                            {country ? `, ${country.countryName}` : ''} {/* Prikaz države */}
                         </p>
                         {experience.destination?.locationType && (
                             <p className="experience-location-type">
@@ -183,11 +200,11 @@ const ExperienceList = ({ currentUser }) => {
                                 {experience.likes}
                             </button>
                             <button className="comment-button" onClick={() => navigate(`/experiences/${experience.id}`)}>
-    <FontAwesomeIcon icon={faComment} className="action-icon" />
-    {experience.comments?.length || 0}
-</button>
+                                <FontAwesomeIcon icon={faComment} className="action-icon" />
+                                {experience.comments?.length || 0}
+                            </button>
                         </div>
-                        {experience.appUser && experience.appUser?.id === loggedInUserId && (  // Provera da li je trenutni korisnik vlasnik iskustva
+                        {experience.appUser && experience.appUser?.id === loggedInUserId && (
                             <div className="owner-actions">
                                 <button className="edit-button" onClick={() => handleEdit(experience.id)}>
                                     <FontAwesomeIcon icon={faEdit} className="action-icon" />
@@ -203,7 +220,9 @@ const ExperienceList = ({ currentUser }) => {
                 </div>
             </div>
         </li>
-    ))}
+    );
+})}
+
                 </ul>
                 <div className="pagination">
                     <button onClick={() => handlePageChange(page - 1)} disabled={page === 0}>Prethodna</button>

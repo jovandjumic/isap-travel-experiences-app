@@ -41,16 +41,20 @@ public class ExperienceService {
         experience.setCreatedAt(new Date());
         experience.setComments(new ArrayList<>());
 
-        if (experience.getDestination() != null && experience.getDestination().getCountry() != null) {
-            String countryName = experience.getDestination().getCountry().getCountryName();
-            Country country = countryRepository.findByCountryName(countryName)
-                    .orElseThrow(() -> new IllegalArgumentException("Country not found"));
-            experience.getDestination().setCountry(country); // Postavljanje postojeće države
+        if (experience.getDestination().getCountryId() != null) {
+            // Pronađi državu na osnovu ID-a samo ako je potrebna
+            Country country = countryRepository.findById(experience.getDestination().getCountryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Country not found with ID: " + experience.getDestination().getCountryId()));
+            // U Destination čuvaš samo countryId
+            experience.getDestination().setCountryId(country.getId());
+        } else {
+            throw new IllegalArgumentException("Country ID cannot be null");
         }
 
         experience.calculateCostPerPerson();
         return experienceRepository.save(experience);
     }
+
 
     public Optional<Experience> getExperienceById(Long id) {
         return experienceRepository.findById(id);
@@ -111,7 +115,7 @@ public class ExperienceService {
     public Page<Experience> searchExperiences(Long userId,
                                                 String locationName,
                                               String regionArea,
-                                              String country,
+                                              Long countryId,
                                               String continent,
                                               String locationType,
                                               Integer minDays, Integer maxDays,
@@ -132,8 +136,8 @@ public class ExperienceService {
             specification = specification.and(ExperienceSpecifications.hasRegionArea(regionArea));
         }
 
-        if (country != null && !country.isEmpty()) {
-            specification = specification.and(ExperienceSpecifications.hasCountry(country));
+        if (countryId != null) {
+            specification = specification.and(ExperienceSpecifications.hasCountryId(countryId));
         }
 
         if (continent != null && !continent.isEmpty()) {

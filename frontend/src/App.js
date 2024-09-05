@@ -15,7 +15,6 @@ import ExperienceDetails from './components/ExperienceDetails.js';
 
 function App() {
     return (
-      <AuthProvider>
         <div className='App'>
                 <Router>
                     <Header />
@@ -41,7 +40,6 @@ function App() {
                     </Routes>
                 </Router>
         </div>
-        </AuthProvider>
     );
 }
 
