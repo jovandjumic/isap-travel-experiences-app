@@ -151,7 +151,7 @@ const ExperienceDetails = () => {
     }
 
     const imageUrl = experience.images?.[currentImageIndex]
-        ? `${process.env.REACT_APP_IMAGE_URL}/uploads/${experience.images[currentImageIndex].split('\\').pop()}`
+        ? `${process.env.REACT_APP_IMAGE_URL}/uploads/${experience.images[currentImageIndex].split('/').pop()}`
         : defaultPhoto;
 
     const country = countries.find(c => c.id === experience.destination?.countryId); // Pronalazimo državu po ID-ju

@@ -204,7 +204,7 @@ const EditUserProfileForm = () => {
                     <div className="form-group">
                         <label>Profilna slika:</label>
                             <div className="image-container">
-                                <img src={(formData.profilePicture && formData.profilePicture.startsWith('blob:') ? formData.profilePicture : `${process.env.REACT_APP_IMAGE_URL}/uploads/${formData.profilePicture.split('\\').pop()}`) || defaultUserPhoto} alt="Profile" className="profile-picture-preview" />
+                                <img src={(formData.profilePicture && formData.profilePicture.startsWith('blob:') ? formData.profilePicture : `${process.env.REACT_APP_IMAGE_URL}/uploads/${formData.profilePicture.split('/').pop()}`) || defaultUserPhoto} alt="Profile" className="profile-picture-preview" />
                                 {formData.profilePicture && formData.profilePicture !== '' && (
     <button type="button" className="remove-profile-image-button" onClick={handleImageRemove}>
         &times;

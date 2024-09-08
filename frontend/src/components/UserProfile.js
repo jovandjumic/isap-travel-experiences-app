@@ -42,7 +42,7 @@ const UserProfile = () => {
                 <div className="user-info-container">
                     <div className="profile-picture-container">
                     <img 
-                        src={user.profilePicture ? `${process.env.REACT_APP_IMAGE_URL}/uploads/${user.profilePicture.split('\\').pop()}` : defaultUserPhoto} 
+                        src={user.profilePicture ? `${process.env.REACT_APP_IMAGE_URL}/uploads/${user.profilePicture.split('/').pop()}` : defaultUserPhoto} 
                         alt={`${user.username} avatar`} 
                         className="profile-picture" 
                     />

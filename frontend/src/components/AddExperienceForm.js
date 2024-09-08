@@ -392,7 +392,7 @@ const [customLocationType, setCustomLocationType] = useState('');
                                         {formData.images.map((imageUrl, index) => {
                                             // Provera da li je imageUrl blob URL ili pravi URL sa servera
                                             const isBlob = imageUrl.startsWith('blob:');
-                                            const imageSrc = isBlob ? imageUrl : `${process.env.REACT_APP_IMAGE_URL}/uploads/${imageUrl.split('\\').pop()}`;
+                                            const imageSrc = isBlob ? imageUrl : `${process.env.REACT_APP_IMAGE_URL}/uploads/${imageUrl.split('/').pop()}`;
                                             return (
                                                 <div key={index} className="image-preview-item">
                                                     <img src={imageSrc} alt={`Experience ${index}`} className="image-preview-thumbnail" />
