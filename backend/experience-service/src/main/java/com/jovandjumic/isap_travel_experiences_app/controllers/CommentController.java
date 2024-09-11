@@ -27,6 +27,13 @@ public class CommentController {
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Comment> getCommentById(@PathVariable Long id) {
+        Optional<Comment> comment = commentService.getCommentById(id);
+        return comment.map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Comment> updateComment(@PathVariable Long id, @RequestBody Map<String, String> payload, @RequestHeader("Authorization") String token) {
         Long userId = getUserIdFromToken(token);  // Dohvati userId putem tokena
@@ -43,7 +50,7 @@ public class CommentController {
     }
 
     private Long getUserIdFromToken(String token) {
-        String url = "http://user-service:8081/api/auth/me";  // Poziv prema user-service
+        String url = "http://3.85.169.58:8080/api/auth/me";  // Poziv prema user-service
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);  // Dodaj token u Authorization zaglavlje
         HttpEntity<String> entity = new HttpEntity<>(headers);
